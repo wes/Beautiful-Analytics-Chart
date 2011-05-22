@@ -1,14 +1,14 @@
 var gridHasBeenDrawn = false;
 Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	color = color || "#cacaca";
-	var path = ["M", Math.round(x) + .5, Math.round(y) + .5, "L", Math.round(x + w) + .5, Math.round(y) + .5, Math.round(x + w) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y) + .5],
+	var path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5, "L", Math.round(x + w) + 0.5, Math.round(y) + 0.5, Math.round(x + w) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y) + 0.5],
 		rowHeight = h / hv,
 		columnWidth = w / wv;
 	for (var i = 1; i < hv; i++) {
-		path = path.concat(["M", Math.round(x) + .5, Math.round(y + i * rowHeight) + .5, "H", Math.round(x + w) + .5]);
+		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5, "H", Math.round(x + w) + 0.5]);
 	}
 	for (i = 1; i < wv; i++) {
-		path = path.concat(["M", Math.round(x + i * columnWidth) + .5, Math.round(y) + .5, "V", Math.round(y + h) + .5]);
+		path = path.concat(["M", Math.round(x + i * columnWidth) + 0.5, Math.round(y) + 0.5, "V", Math.round(y + h) + 0.5]);
 	}
 	return this.path(path.join(",")).attr({
 		stroke: color
@@ -71,7 +71,7 @@ function drawLine(conf) {
 		leftgutter = 0,
 		bottomgutter = 50,
 		topgutter = 20,
-		colorhue = .6 || Math.random(),
+		colorhue = 0.6 || Math.random(),
 		color = mastercolor,
 		r = holder,
 		txt = {
@@ -89,8 +89,8 @@ function drawLine(conf) {
 		X = (width - leftgutter) / labels.length,
 		max = Math.max.apply(Math, data),
 		Y = (height - bottomgutter - topgutter) / max;
-	if (!r.gridDrawn && nogrid == false) {
-		r.drawGrid(leftgutter + X * .5 + .5, topgutter + .5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
+	if (!r.gridDrawn && nogrid === false) {
+		r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
 	}
 	r.gridDrawn = true;
 	var path = r.path().attr({
@@ -98,9 +98,9 @@ function drawLine(conf) {
 		"stroke-width": 4,
 		"stroke-linejoin": "round"
 	}),
-		bgp = showarea == true ? r.path().attr({
+		bgp = showarea === true ? r.path().attr({
 		stroke: "none",
-		opacity: .3,
+		opacity: 0.3,
 		fill: color
 	}) : r.path().attr({
 		stroke: "none",
@@ -120,20 +120,20 @@ function drawLine(conf) {
 		fill: "#ffffff",
 		stroke: "#666",
 		"stroke-width": 2,
-		"fill-opacity": .8
+		"fill-opacity": 0.8
 	}).hide();
 	var p, bgpp;
 	for (var i = 0, ii = labels.length; i < ii; i++) {
 		var y = Math.round(height - bottomgutter - Y * data[i]),
-			x = Math.round(leftgutter + X * (i + .5)),
-			t = gridHasBeenDrawn[holder] == false ? labels.length > 120 ? i % 2 == 0 ? false : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
+			x = Math.round(leftgutter + X * (i + 0.5)),
+			t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
 		if (!i) {
 			p = ["M", x, y, "C", x, y];
-			bgpp = ["M", leftgutter + X * .5, height - bottomgutter, "L", x, y, "C", x, y];
+			bgpp = ["M", leftgutter + X * 0.5, height - bottomgutter, "L", x, y, "C", x, y];
 		}
 		if (i && i < ii - 1) {
 			var Y0 = Math.round(height - bottomgutter - Y * data[i - 1]),
-				X0 = Math.round(leftgutter + X * (i - .5)),
+				X0 = Math.round(leftgutter + X * (i - 0.5)),
 				Y2 = Math.round(height - bottomgutter - Y * data[i + 1]),
 				X2 = Math.round(leftgutter + X * (i + 1.5));
 			var a = getAnchors(X0, Y0, x, y, X2, Y2);
@@ -145,7 +145,7 @@ function drawLine(conf) {
 			stroke: color,
 			"stroke-width": 2
 		});
-		if (y == 0) {
+		if (y === 0) {
 			dot.attr({
 				opacity: 0
 			});
