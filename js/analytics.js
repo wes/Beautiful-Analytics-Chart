@@ -23,11 +23,8 @@ Raphael.fn.drawLineChart = function(conf) {
 		linecolor2 = !conf.linecolor2 ? conf.mastercolor: conf.linecolor2,
 		mousecoords = !conf.mousecoords ? 'rect': conf.mousecoords,
 		nogrid = !conf.nogrid ? false: conf.nogrid,
-		labels = [],
-		data = [],
 		datatotal = [],
-		lines1 = [],
-		lines2 = [],
+		
 		getAnchors = function(p1x, p1y, p2x, p2y, p3x, p3y) {
 			var l1 = (p2x - p1x) / 2,
 				l2 = (p3x - p2x) / 2,
@@ -49,30 +46,43 @@ Raphael.fn.drawLineChart = function(conf) {
 				x2: p2x + dx2,
 				y2: p2y + dy2
 			};
+		},
+		
+		loadTableData = function(table_id) {
+			var table = document.getElementById(table_id),
+				res = {
+					labels: [],
+					data: [],
+					lines1: [],
+					lines2: []
+				},
+				labels, data, lines1, lines2, j;
+			
+			if (table) {
+				labels = table.getElementsByTagName('tfoot')[0].getElementsByTagName('th');
+				for (j=0; j < labels.length; j++) {
+					res.labels.push(labels[j].innerHTML);
+				}
+				data = table.getElementsByClassName('data')[0].getElementsByTagName('td');
+				for (j=0; j < data.length; j++) {
+					res.data.push(data[j].innerHTML);
+				}
+				lines1 = table.getElementsByClassName('line1')[0].getElementsByTagName('td');
+				for (j=0; j < lines1.length; j++) {
+					res.lines1.push(lines1[j].innerHTML);
+				}
+				lines2 = table.getElementsByClassName('line2')[0].getElementsByTagName('td');
+				for (j=0; j < lines2.length; j++) {
+					res.lines2.push(lines2[j].innerHTML);
+				}
+				return res;
+			} else {
+				return false;
+			}
 		};
-	
-	var data_table = document.getElementById(data_holder);
-	if (!data_table) {
-		return false;
-	}
-	var ths = data_table.getElementsByTagName('tfoot')[0].getElementsByTagName('th');
-	for (var j=0; j < ths.length; j++) {
-		labels.push(ths[j].innerHTML);
-	}
-	var data_tds = data_table.getElementsByClassName('data')[0].getElementsByTagName('td');
-	for (var j=0; j < data_tds.length; j++) {
-		data.push(data_tds[j].innerHTML);
-	}
-	var line1_tds = data_table.getElementsByClassName('line1')[0].getElementsByTagName('td');
-	for (var j=0; j < line1_tds.length; j++) {
-		lines1.push(line1_tds[j].innerHTML);
-	}
-	var line2_tds = data_table.getElementsByClassName('line2')[0].getElementsByTagName('td');
-	for (var j=0; j < line2_tds.length; j++) {
-		lines2.push(line2_tds[j].innerHTML);
-	}
-	
-	var width = spewidth,
+		
+	var table = loadTableData(data_holder),
+		width = spewidth,
 		height = 250,
 		leftgutter = 0,
 		bottomgutter = 50,
@@ -92,8 +102,8 @@ Raphael.fn.drawLineChart = function(conf) {
 			font: 'bold 10px Helvetica, Arial',
 			fill: "#000000"
 		},
-		X = (width - leftgutter) / labels.length,
-		max = Math.max.apply(Math, data),
+		X = (width - leftgutter) / table.labels.length,
+		max = Math.max.apply(Math, table.data),
 		Y = (height - bottomgutter - topgutter) / max;
 	if (!r.gridDrawn && nogrid === false) {
 		r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
@@ -193,17 +203,17 @@ Raphael.fn.drawLineChart = function(conf) {
 		},
 		x, y;
 		
-	for (var i = 0, ii = labels.length; i < ii; i++) {
-		y = Math.round(height - bottomgutter - Y * data[i]);
+	for (var i = 0, ii = table.labels.length; i < ii; i++) {
+		y = Math.round(height - bottomgutter - Y * table.data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
 			p = ["M", x, y, "C", x, y];
 			bgpp = ["M", leftgutter + X * 0.5, height - bottomgutter, "L", x, y, "C", x, y];
 		}
 		if (i && i < ii - 1) {
-			var Y0 = Math.round(height - bottomgutter - Y * data[i - 1]),
+			var Y0 = Math.round(height - bottomgutter - Y * table.data[i - 1]),
 			X0 = Math.round(leftgutter + X * (i - 0.5)),
-			Y2 = Math.round(height - bottomgutter - Y * data[i + 1]),
+			Y2 = Math.round(height - bottomgutter - Y * table.data[i + 1]),
 			X2 = Math.round(leftgutter + X * (i + 1.5));
 			var a = getAnchors(X0, Y0, x, y, X2, Y2);
 			p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
@@ -233,7 +243,7 @@ Raphael.fn.drawLineChart = function(conf) {
 			}));
 		}
 		var rect = blanket[blanket.length - 1];
-		bindHoverEvent(x, y, data[i], datatotal[i], labels[i], lines1[i], lines2[i], dot);
+		bindHoverEvent(x, y, table.data[i], datatotal[i], table.labels[i], table.lines1[i], table.lines2[i], dot);
 	}
 	p = p.concat([x, y, x, y]);
 	bgpp = bgpp.concat([x, y, x, y, "L", x, height - bottomgutter, "z"]);
