@@ -11,7 +11,8 @@ To download and contribute (please do!), check out the [project on GitHub][3].
 
 ## Features ##
 
-The concept for the code is dervied from the Raphael [Analytics example][4].	
+The concept for the code is dervied from the Raphael [Analytics example][4].
+
 *		Draws a line chart with custom design for a given set of data.
 *		Framework agnostic (only requirement is Raphael).
 *		Semantic use of the document: data is loaded from a table element.
