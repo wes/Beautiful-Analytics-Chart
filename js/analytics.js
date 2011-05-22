@@ -210,7 +210,7 @@ Raphael.fn.drawLineChart = function(conf) {
 			}
 		},
 		
-		table = loadTableData(data_holder),
+		table = loadTableData(data_holder), //TODO allow passing data by array
 		width = spewidth,
 		height = 250,
 		leftgutter = 0,
@@ -219,6 +219,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		colorhue = 0.6 || Math.random(),
 		color = mastercolor,
 		r = this,
+		//TODO allow customizing of txt, txt1, txt2 styles
 		txt = {
 			font: '10px Helvetica, Arial',
 			fill: "#000000"
@@ -234,11 +235,13 @@ Raphael.fn.drawLineChart = function(conf) {
 		X = (width - leftgutter) / table.labels.length,
 		max = Math.max.apply(Math, table.data),
 		Y = (height - bottomgutter - topgutter) / max,
+		//TODO allow customizing
 		path = r.path().attr({
 			stroke: color,
 			"stroke-width": 4,
 			"stroke-linejoin": "round"
 		}),
+		//TODO allow customizing
 		bgp = showarea === true ? r.path().attr({
 			stroke: "none",
 			opacity: 0.3,
@@ -325,12 +328,14 @@ Raphael.fn.drawLineChart = function(conf) {
 	}
 	r.gridDrawn = true;
 	
+	//TODO ??
 	label.push(r.text(60, 12, "24 hits").attr(txt1));
 	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
 		fill: color
 	}));
 	label.hide();
 	
+	//TODO allow customizing
 	frame = r.popup(100, 100, label, "right").attr({
 		fill: "#ffffff",
 		stroke: "#666",
@@ -357,6 +362,7 @@ Raphael.fn.drawLineChart = function(conf) {
 			bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 		}
 		
+		//TODO allow customizing all of these
 		dot = r.circle(x, y, 4).attr({
 			fill: "#ffffff",
 			stroke: color,
