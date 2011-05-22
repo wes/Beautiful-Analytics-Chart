@@ -182,16 +182,15 @@ Raphael.fn.lineChart = function(method) {
 				max = Math.max.apply(Math, table.data),
 				Y = (height - gutter.bottom - gutter.top) / max,
 				
-				label = element.set(),
-				is_label_visible = false,
 				blanket = element.set(),
-				frame,
 				p,
 				bgpp,
 				x,
 				y;
 				
 			this.lineChart.dots = [];
+			this.lineChart.rects = [];
+			this.lineChart.info = [];
 			//TODO allow customizing
 			this.lineChart.path = element.path().attr({
 				stroke: this.lineChart.settings.colors.master,
@@ -239,15 +238,16 @@ Raphael.fn.lineChart = function(method) {
 			}
 
 			// prepare popup
+			this.lineChart.label = element.set();
 			//TODO ??
-			label.push(element.text(60, 12, "24 hits").attr(this.lineChart.settings.text.popup_line1));
-			label.push(element.text(60, 27, "22 September 2008").attr(this.lineChart.settings.text.popup_line2).attr({
+			this.lineChart.label.push(element.text(60, 12, "24 hits").attr(this.lineChart.settings.text.popup_line1));
+			this.lineChart.label.push(element.text(60, 27, "22 September 2008").attr(this.lineChart.settings.text.popup_line2).attr({
 				fill: this.lineChart.settings.colors.master
 			}));
-			label.hide();
+			this.lineChart.label.hide();
 
 			//TODO allow customizing
-			frame = element.popup(100, 100, label, "right").attr({
+			this.lineChart.frame = element.popup(100, 100, this.lineChart.label, "right").attr({
 				fill: "#ffffff",
 				stroke: "#666",
 				"stroke-width": 2,
@@ -309,8 +309,15 @@ Raphael.fn.lineChart = function(method) {
 					}));
 				}
 				rect = blanket[blanket.length - 1];
+				this.lineChart.rects.push(rect);
 				
-				helpers.bindHoverEvent(this, x, y, table.data[i], table.labels[i], table.lines1[i], table.lines2[i], dot, rect, frame, label);
+				this.lineChart.info.push({
+					data: table.data[i],
+					label: table.labels[i],
+					line1: table.lines1[i],
+					line2: table.lines2[i]
+				});
+				helpers.bindHoverEvent(this, x, y, i, dot, rect, this.lineChart.frame, this.lineChart.label);
 			}
 
 			p = p.concat([x, y, x, y]);
@@ -321,12 +328,13 @@ Raphael.fn.lineChart = function(method) {
 			this.lineChart.bgp.attr({
 				path: bgpp
 			});
-			frame.toFront();
-			label[0].toFront();
-			label[1].toFront();
+			this.lineChart.frame.toFront();
+			this.lineChart.label[0].toFront();
+			this.lineChart.label[1].toFront();
 			blanket.toFront();
 		},
 		
+		// Caution: this would only work for the same number of records
 		setDataHolder: function(id) {
 			var width = this.lineChart.settings.width,
 				height = this.lineChart.settings.height,
@@ -341,7 +349,8 @@ Raphael.fn.lineChart = function(method) {
 				p, bgpp;
 			
 			for (var i = 0, ii = table.labels.length; i < ii; i++) {
-				var dot, rect;
+				var dot = this.lineChart.dots[i],
+					rect = this.lineChart.rects[i];
 				
 				// calculate current x, y
 				y = Math.round(height - gutter.bottom - Y * table.data[i]);
@@ -362,9 +371,17 @@ Raphael.fn.lineChart = function(method) {
 					bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
 				
-				this.lineChart.dots[i].animate({cy: y},
-						this.lineChart.settings.animation.speed,
-						this.lineChart.settings.animation.easing);
+				dot.animate({cy: y},
+					this.lineChart.settings.animation.speed,
+					this.lineChart.settings.animation.easing);
+				
+				// new popup data
+				this.lineChart.info[i] = {
+					data: table.data[i],
+					label: table.labels[i],
+					line1: table.lines1[i],
+					line2: table.lines2[i]
+				};
 			}
 			p = p.concat([x, y, x, y]);
 			bgpp = bgpp.concat([x, y, x, y, "L", x, height - gutter.bottom, "z"]);
@@ -454,66 +471,69 @@ Raphael.fn.lineChart = function(method) {
 			}
 		},
 		
-		//TODO too many parameters
-		bindHoverEvent: function(elm, x, y, data, lbl, line1, line2, dot, rect, frame, label) {
-			rect.hover(function() {
-				window.clearTimeout(elm.leave_timer);
-				var side = "right";
-				if (x + frame.getBBox().width > elm.lineChart.settings.width) {
-					side = "left";
-				}
-				var ppp = elm.popup(x, y, label, side, 1);
-				if (elm.lineChart.settings.mouse_coords == 'circle') {
-					frame.attr({
-						path: ppp.path,
-						width: '200px'
-					}).show();
-					label[0].attr({
-						text: line1,
-						fill: elm.lineChart.settings.colors.line1,
-						translation: [ppp.dx, ppp.dy]
-					}).show();
-					label[1].attr({
-						text: line2,
-						fill: elm.lineChart.settings.colors.line2,
-						translation: [ppp.dx, ppp.dy]
-					}).show();
-				} else if (elm.lineChart.settings.mouse_coords == 'rect') {
-					frame.show().stop().animate({
-						path: ppp.path
-					},
-					200 * elm.lineChart.is_label_visible);
-					label[0].attr({
-						text: line1
-					}).show().stop().animateWith(frame, {
-						translation: [ppp.dx, ppp.dy]
-					},
-					200 * elm.lineChart.is_label_visible);
-					label[1].attr({
-						text: line2
-					}).show().stop().animateWith(frame, {
-						translation: [ppp.dx, ppp.dy]
-					},
-					200 * elm.lineChart.is_label_visible);
-				}
-				frame.toFront();
-				label[0].toFront();
-				label[1].toFront();
-				this.toFront();
-				dot.attr("r", 6);
-				elm.lineChart.is_label_visible = true;
-			},
-			function() {
-				dot.attr("r", 4);
-				
-				elm.leave_timer = window.setTimeout(function() {
-					frame.hide();
-					label[0].hide();
-					label[1].hide();
-					elm.lineChart.is_label_visible = false;
+		bindHoverEvent: function(elm, x, y, i, dot, rect, frame, label) {
+			var f_in = function() {
+					var side = "right",
+						info = elm.lineChart.info[i];
+					
+					window.clearTimeout(elm.leave_timer);
+					if (x + frame.getBBox().width > elm.lineChart.settings.width) {
+						side = "left";
+					}
+					var ppp = elm.popup(x, y, label, side, 1);
+					if (elm.lineChart.settings.mouse_coords == 'circle') {
+						frame.attr({
+							path: ppp.path,
+							width: '200px'
+						}).show();
+						label[0].attr({
+							text: info.line1,
+							fill: elm.lineChart.settings.colors.line1,
+							translation: [ppp.dx, ppp.dy]
+						}).show();
+						label[1].attr({
+							text: info.line2,
+							fill: elm.lineChart.settings.colors.line2,
+							translation: [ppp.dx, ppp.dy]
+						}).show();
+					} else if (elm.lineChart.settings.mouse_coords == 'rect') {
+						frame.show().stop().animate({
+							path: ppp.path
+						},
+						200 * elm.lineChart.is_label_visible);
+						label[0].attr({
+							text: info.line1
+						}).show().stop().animateWith(frame, {
+							translation: [ppp.dx, ppp.dy]
+						},
+						200 * elm.lineChart.is_label_visible);
+						label[1].attr({
+							text: info.line2
+						}).show().stop().animateWith(frame, {
+							translation: [ppp.dx, ppp.dy]
+						},
+						200 * elm.lineChart.is_label_visible);
+					}
+					frame.toFront();
+					label[0].toFront();
+					label[1].toFront();
+					this.toFront();
+					dot.attr("r", 6);
+					elm.lineChart.is_label_visible = true;
 				},
-				1);
-			});
+				f_out = function() {
+					dot.attr("r", 4);
+				
+					elm.leave_timer = window.setTimeout(function() {
+						frame.hide();
+						label[0].hide();
+						label[1].hide();
+						elm.lineChart.is_label_visible = false;
+					},
+					1);
+				};
+			
+			rect.hover(f_in, f_out);
 		},
 		
 		drawYlabels: function(elm, x, y, height, step, max, top, style) {
