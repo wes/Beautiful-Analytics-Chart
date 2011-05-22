@@ -1,18 +1,37 @@
-<html>
-<head>
-	<title>Beautiful Analytics Chart</title>
-	<link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" title="Demo Stylesheet" charset="utf-8">
-	<script type='text/javascript' src='js/lib/raphael.js'></script>
-	<script type='text/javascript' src='js/lib/highlight.js'></script>
-	<script type='text/javascript' src='js/raphael_linechart.js'></script>
-	<script type='text/javascript'>
-	  function loadCharts() {
+<!DOCTYPE html> 
+ 
+<html lang="en"> 
+ 
+<head> 
+  <title>Rapahël Line Charts Plugin</title>
+
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="css/demo.css" media="screen">
+ 
+	<script type="text/javascript" src="js/lib/raphael.js"></script>
+	<script type="text/javascript" src="js/lib/highlight.js"></script>
+	<script type="text/javascript" src="js/raphael_linechart.js"></script>
+ 
+	<script type="text/javascript">
+	  window.onload = function(){
 			var w = 840;
-			var h1 = Raphael('beautiful-line-chart1', w, 250);
-			var h2 = Raphael('beautiful-line-chart2', w, 250);
-			var h3 = Raphael('beautiful-line-chart3', w, 250);
-			var h4 = Raphael('beautiful-line-chart4', w, 250);
+			var h1 = Raphael('chart1', w, 250);
+			var h1_source = 'd1';
+			var h2 = Raphael('chart2', w, 250);
+			var h3 = Raphael('chart3', w, 250);
+			var h4 = Raphael('chart4', w, 250);
 			h1.lineChart({
+				data_holder: h1_source,
+				width: w,
+				show_area: true,
+				mouse_coords: 'rect',
+				x_labels_step: 3,
+				y_labels_count: 5,
+        colors: {
+          master: '#d90000'
+        }
+			});
+			h2.lineChart({
 				data_holder: 'd2',
 				width: w,
 				show_area: true,
@@ -21,7 +40,7 @@
 				  master: '#01A8F0'
 				}
 			});
-			h1.lineChart({
+			h2.lineChart({
 				data_holder: 'd1',
 				width: w,
 				show_area: true,
@@ -30,19 +49,12 @@
 				  master: '#8fd100'
 				}
 			});
-			h2.lineChart({
-				data_holder: 'd1',
-				width: w,
-				show_area: true,
-				mouse_coords: 'circle',
-				colors: {
-				  master: '#d90000'
-				}
-			});
 			h3.lineChart({
 				data_holder: 'd2',
 				width: w,
 				show_area: false,
+				x_labels_step: 3,
+				y_labels_count: 5,
 				mouse_coords: 'rect',
 				colors: {
 				  master: '#d90000'
@@ -64,6 +76,11 @@
 				  master: '#989898'
 				}
 			});
+		
+  		change_h1 = function() {
+  		  h1_source = h1_source == 'd1' ? 'd2' : 'd1';
+  		  h1.lineChart('setDataHolder', h1_source);
+  		}  
 		}
 
 		// Just used in the code highlighter
@@ -72,77 +89,97 @@
 
 	</script>
 </head>
-<body onload="loadCharts()">
+<body>
 	
-	<div id='main'>
+	<div id="main">
 	
-		<div class='typography'>
+		<div>
 
-			<h1>Beautiful Analytics Chart</h1>
-		
-			<p class='s3'>Ever wanted a really great line chart that is simple and unobtrusive?<br />There are many options out there, this is just another option.</p>
+			<h1>Rapahël Line Charts Plugin</h1>
 			
-			<p>Leave your comment on the <a href='http://joedesigns.com/v22/index.php?page=scripts_widgets&id=83#comments'>blog post</a>.</p>
+			<p>
+			  This plugin is a result of frustration from current client-side charting solutions.<br/>
+			  I needed something simple that would draw a line chart in SVG based on a table in a page,
+			  be customizable enough and allow me to change the data set on demand.
+			  I couldn't find one.<br/>
+			  So here goes.
+			</p>
 			
-			<p>Check out the <a href='https://github.com/wes/Beautiful-Analytics-Chart' target='new'>project on github</a>.</p>
-
+			<p>
+			  This plugin relies heavily on the wonderful <a href="http://raphaeljs.com/">Raphaël</a>
+			  JavaScript SVG library.<br/>
+			  It is also a (quite extensive) fork of
+			  <a href="https://github.com/wes/Beautiful-Analytics-Chart">we's Beautiful Analytics Chart</a> project.
+			</p>
+			
+			<p>
+			  To download and contribute (please do!), check out the
+			  <a href="https://github.com/n0nick/raphael-linechart">project on GitHub</a>.
+			</p>
+			
 		</div>
 	
-		<div class='box rotate_r'>
-			<div class='inner'>
-				<div id='beautiful-line-chart1'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart1"></div>
+				<button onclick="change_h1()">Change data source</button>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 
-			<h2>About</h2>
+			<h2>Features</h2>
 			
-			<p class='s1'>This is derived from a <a href='http://raphaeljs.com/analytics.html'>raphael example</a>, rewritten to be more configurable.
-			  My overall goal with this line chart was to create a simple and easy to use library that can create great looking line charts.	 After seeing raphael's example, I knew this was the perfect place to start.
+			<p>
+			  The concept for the code is dervied from the Raphael
+			  <a href="http://raphaeljs.com/analytics.html">Analytics example</a>.<br/>
+			  <ul>
+			    <li>Draws a line chart with custom design for a given set of data.</li>
+			    <li>Framework agnostic (only requirement is Raphael).</li>
+			    <li>Semantic use of the document: data is loaded from a table element.</li>
+			    <li>Ability to change data source (updating the chart).</li>
+			    <li>Custom display of X &amp; Y axis labels.</li>
+			  </ul>
 			</p>
-
-			<hr />
 			
 			<h2>Requirements</h2>
 		
 			<p>
 				<ul>
-					<li>Raphael - <a href='http://raphaeljs.com'>http://raphaeljs.com</a></li>
+					<li>Raphael - <a href="http://raphaeljs.com">http://raphaeljs.com</a></li>
 				</ul>
 			</p>
 			
 		</div>
 
-		<div class='box rotate_l'>
-			<div class='inner'>
-				<div id='beautiful-line-chart2'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart2"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 
-			<h2>Installation and Usage</h2>
+			<h2>Usage</h2>
 			
-			<p>
-				<b>Step 1.</b><br />
-				You must first include raphael and the <a href='js/analytics.js'>analytics</a> library.
-			</p>
+		  <h3>Include it.</h3>
 			
 			<pre>
-				<code class='html'>
+				<code class="html">
 &lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/raphael.js&#39;&gt;&lt;/script&gt;
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/analytics.js&#39;&gt;&lt;/script&gt;
+&lt;script type=&#39;text/javascript&#39; src=&#39;js/raphael_linechart.js&#39;&gt;&lt;/script&gt;
 				</code>
 			</pre>
 			
+			<h3>Give it data.</h3>
+			
 			<p>
-				<b>Step 2.</b><br />
-				Create your holding div and table data templates as below or see example <a href='#download'>download</a>.
+			  Future versions will allow more flexible ways of passing data, either by different
+			  types of elements or by directly passing an array.
 			</p>
 			
 			<pre>
-				<code class='html'>
+				<code class="html">
 &lt;div id=&#39;line-chart-holder&#39;&gt;&lt;/div&gt;
 &lt;table id=&quot;d1&quot; style=&#39;display: none;&#39;&gt;
 	&lt;tfoot&gt;
@@ -181,59 +218,87 @@
 				</code>
 			</pre>
 			
-			<p>
-				<b>Step 3.</b><br />
-				Call the <a href='#drawline'>lineChart()</a> function to create your line chart.
-			</p>
+			<h3>Call it.</h3>
 			
 			<pre>
-				<code class='html'>
+				<code class="html">
 &lt;script type=&#39;text/javascript&#39;&gt;
-	Element.observe(window,&#39;load&#39;, function(){
+	window.onload = function(){
 		var w = 840; // you can make this dynamic so it fits as you would like
-		var linechart = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
-		linechart.lineChart({ // call the lineChart function
+		var paper = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
+		paper.lineChart({ // call the lineChart function
 			data_holder: &#39;d2&#39;, // find the table data source by id
-			mastercolor: &#39;#01A8F0&#39;, // set the line color
 			width: w, // pass in the same width
 			show_area: true, // show the area
-			mouse_coords: &#39;rect&#39; // rect (uses blanket mode) | circle (pinpoints the points)
+			x_labels_step: 3,	// X axis labels step
+			y_labels_count: 5,	// Y axis labels count
+			mouse_coords: &#39;rect&#39;, // rect (uses blanket mode) | circle (pinpoints the points)
+			colors: {
+			  master: &#39;#01A8F0&#39; // set the line color
+			}
 		});
-	});
+	};
 &lt;/script&gt;
 				</code>
 			</pre>
 			
 		</div>
 
-		<div class='box rotate_r'>
-			<div class='inner'>
-				<div id='beautiful-line-chart3'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart3"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 			
-			<a name='drawline'></a>
+			<a name="drawline"></a>
 			
 			<h2>Documentation</h2>
 		
-			<p>The lineChart() function will accept a list of arguments in a json style format.</p>
+			<p>The lineChart() plugin will accept a list of arguments in a json style format.</p>
 			
 			<pre>
-			<code class='javascript'>
+			<code class="javascript">
 var opts = {
-	data_holder: &#39;&#39;, // id of table data holder
-	width: &#39;&#39;, // width in pixels
-	show_area: &#39;&#39;, // bool to show the area of the line
-	mouse_coords: &#39;&#39;, // selection of mouseover | rect (default), circle 
-	no_grid: &#39;&#39;, // bool hide grid override.. grid be drawn once for every line chart holder
-	colors: {
-  	master: &#39;&#39;, // line color ex: #ff0000
-  	line1: &#39;&#39;, // color of the line1 in popup
-  	line2: &#39;&#39;, // color of the line2 in popup
+	data_holder: null,		// table element holding the data to display
+	width: 500,			// chart width
+	height: 250,			// chart height
+	gutter: {                    // gutter dimensions
+		top: 20,
+		right: 0,
+		bottom: 50,
+		left: 30
+	},
+	show_area: false,		// whether to fill the area below the line
+	mouse_coords: &#39;rect&#39;,	// way to capture mouse events
+	no_grid: false,		// whether to display background grid
+	x_labels_step: false,	// X axis: either false or a step integer
+	y_labels_count: false,	// Y axis: either false or a labels count
+	animation: {			// animation (on data source change) settings
+		speed: 600,
+		easing: "backOut"
+	},
+	colors: {	                // color settings
+		master: &#39;#01A8F0&#39;,
+		line1: &#39;#000000&#39;,
+		line2: &#39;#01A8F0&#39;,
+	},
+	text: {		        // text style settings
+		axis_labels: {
+			font: &#39;10px Helvetica, Arial&#39;,
+			fill: "#000000"
+		},
+		popup_line1: {
+			font: &#39;bold 11px Helvetica, Arial&#39;,
+			fill: "#000000"
+		},
+		popup_line2: {
+			font: &#39;bold 10px Helvetica, Arial&#39;,
+			fill: "#000000"
+		}
 	}
-}
+};
 
 r.lineChart(opts); // draw the line chart in an initiated Raphael object
 			</code>
@@ -241,85 +306,40 @@ r.lineChart(opts); // draw the line chart in an initiated Raphael object
 		</div>
 	
 
-		<div class='typography'>
+		<div>
 			
-			<a name='drawline'></a>
+			<a name="drawline"></a>
 			
 			<h2>Download</h2>
 			
-			<p class='s3'>Download <a href='js/analytics.js'>Analytics JS File</a> (8kb) Min</p>
-			<p class='s3'>Download <a href='http://joedesigns.com/download_file.php?f=https%3A%2F%2Fgithub.com%2Fwes%2FBeautiful-Analytics-Chart%2Fzipball%2Fmaster'>Full Example</a> (225kb) Zipped</p>
+			<p>
+			  Check out <a href="https://github.com/n0nick/raphael-linechart">The project page on GitHub</a>
+			  to download the source and example files.
+			</p>
 
 		</div>
 
-		<div class='box rotate_l'>
-			<div class='inner'>
-				<div id='beautiful-line-chart4'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart4"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
-			
-			<a name='drawline'></a>
-			
-			<h2>Extras</h2>
-			
-			<p>You can add a little css to give the charts depth and page like feel.</p>
-			
-			<pre>
-				<code class='css'>
-.box {
-margin: 0;
-padding: 0;
-clear: both;
-overflow: hidden; 
-}
-
-.rotate_r { -webkit-transform: rotate(-2deg); -moz-transform: rotate(-2deg); }
-.rotate_l { -webkit-transform: rotate(2deg); -moz-transform: rotate(2deg); }
-
-.box .inner {
-list-style-type: none;
-margin: 0 30px 30px 0;
-padding: 14px 0 0 15px;
-width: 850px;
-height: 250px;
-border: 0;
-position: relative;
-float: left;
-background: #fafafa;
-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
--webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 60px rgba(100, 100, 0, 0.1) inset;
--moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; }
-
-				</code>
-			</pre>
-
-			<p>Then make sure it has some html wrapping the holding container.</p>
-			
-			<pre>
-				<code class='html'>
-
-&lt;div class=&#39;box rotate_l&#39;&gt;
-	&lt;div class=&#39;inner&#39;&gt;
-		&lt;div id=&#39;line-chart&#39;&gt;&lt;/div&gt;
-	&lt;/div&gt;
-&lt;/div&gt;
-
-				</code>
-			</pre>
+		<div>
 
 			<h2>Thanks!</h2>
 			<p>
-				I just wanted to say thanks to Dmitry Baranovskiy at <a href='http://raphaeljs.com'>Raphael JS</a>, for supplying such an awesome example. Also Nic Knight for helping me test and abstract the changes overall.
-				
+			  This page is mostly a rip-off of the original
+			  <a href="http://joedesigns.com/labs/Beautiful-Analytics-Chart/">Beautiful Analytics Chart</a>
+			  code, which my plugin is a fork of.<br/>
+			  So credit is due to <a href="http://joedesigns.com/">Joe Designs</a> for the initial work and <a href="http://raphaeljs.com/">Dmitry Baranovskiy</a> for Raphael JS.
 			</p>
 
 		</div>
 
 	</div>
 	
-	<table id="d1" style='display: none;'>
+	<table id="d1" style="display: none;">
 			<tfoot>
 					<tr>
 									<th>3/02</th>
@@ -355,7 +375,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<th>4/22</th>
 							</tr>
 			</tfoot>
-			<tbody class='data'>
+			<tbody class="data">
 					<tr>
 									<td>70</td>
 									<td>70</td>
@@ -390,7 +410,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<td>175</td>
 						</tr>
 			</tbody>
-			<tbody class='line1'>
+			<tbody class="line1">
 					<tr>
 									<td>70 Views</td>
 									<td>70 Views</td>
@@ -425,7 +445,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<td>175 Views</td>
 						</tr>
 			</tbody>
-			<tbody class='line2'>
+			<tbody class="line2">
 					<tr>
 									<td>Mar 2nd 2011</td>
 									<td>Mar 3rd 2011</td>
@@ -462,7 +482,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 			</tbody>
 	</table>
 	
-	<table id="d2" style='display: none;'>
+	<table id="d2" style="display: none;">
 			<tfoot>
 					<tr>
 									<th>3/02</th>
@@ -498,7 +518,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<th>4/22</th>
 							</tr>
 			</tfoot>
-			<tbody class='data'>
+			<tbody class="data">
 					<tr>
 									<td>70</td>
 									<td>140</td>
@@ -533,7 +553,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<td>6475</td>
 						</tr>
 			</tbody>
-			<tbody class='line1'>
+			<tbody class="line1">
 					<tr>
 									<td>70 Users</td>
 									<td>140 Users</td>
@@ -568,7 +588,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 									<td>6,475 Users</td>
 						</tr>
 			</tbody>
-			<tbody class='line2'>
+			<tbody class="line2">
 					<tr>
 									<td>Mar 2nd 2011</td>
 									<td>Mar 3rd 2011</td>
