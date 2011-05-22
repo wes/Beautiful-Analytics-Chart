@@ -1,5 +1,13 @@
+/*
+ * Raphael Line Chart 1.2 - Raphael Line Charts plugin
+ *
+ * Copyright (c) 2011 Sagie Maoz (http://sagie.maoz.info)
+ * Dual-licensed under the GPL (http://www.opensource.org/licenses/gpl-3.0)
+ * and the MIT (http://www.opensource.org/licenses/mit-license) licenses.
+ */
 (function() {
 
+// modified version of Raphael.fn.drawGrid() from the Raphael Analytics example
 Raphael.fn.drawGrid = function(x, y, width, height, x_step, x_size, y_count, y_size) {
 	var path,
 		rowHeight,
@@ -624,30 +632,30 @@ Raphael.fn.lineChart = function(method) {
 };
 
 Raphael.fn.lineChart.defaults = {
-	data_holder: null,
-	width: 500,
-	height: 250,
-	gutter: {
+	data_holder: null,		// table element holding the data to display
+	width: 500,				// chart width
+	height: 250,			// chart height
+	gutter: {				// gutter dimensions
 		top: 20,
 		right: 0,
 		bottom: 50,
 		left: 30
 	},
-	show_area: false,
-	mouse_coords: 'rect',
-	no_grid: false,
-	x_labels_step: false, // either false or a step integer
-	y_labels_count: false,  // either false or a labels count
-	animation: {
+	show_area: false,		// whether to fill the area below the line
+	mouse_coords: 'rect',	// way to capture mouse events
+	no_grid: false,			// whether to display background grid
+	x_labels_step: false,	// X axis: either false or a step integer
+	y_labels_count: false,	// Y axis: either false or a labels count
+	animation: {			// animation (on data source change) settings
 		speed: 600,
 		easing: "backOut"
 	},
-	colors: {
+	colors: {				// color settings
 		master: '#01A8F0',
 		line1: '#000000',
 		line2: '#01A8F0',
 	},
-	text: {
+	text: {					// text style settings
 		axis_labels: {
 			font: '10px Helvetica, Arial',
 			fill: "#000000"
