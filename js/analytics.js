@@ -256,7 +256,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		leave_timer,
 		blanket = r.set(),
 		
-		bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot) {
+		bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot, rect, frame) {
 			var timer,
 			i = 0;
 			rect.hover(function() {
@@ -387,7 +387,7 @@ Raphael.fn.drawLineChart = function(conf) {
 			}));
 		}
 		rect = blanket[blanket.length - 1];
-		bindHoverEvent(x, y, table.data[i], datatotal[i], table.labels[i], table.lines1[i], table.lines2[i], dot);
+		bindHoverEvent(x, y, table.data[i], datatotal[i], table.labels[i], table.lines1[i], table.lines2[i], dot, rect, frame);
 	}
 	
 	p = p.concat([x, y, x, y]);
