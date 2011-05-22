@@ -372,7 +372,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		
 		// x-axis labels
 		if (x_labels && (i % x_labels === 0)) {
-			r.text(x, height - 6, table.labels[i]).attr(txt).toBack();
+			r.text(x, height - bottomgutter + 18, table.labels[i]).attr(txt).toBack();
 		}
 		
 		if (!i) {
