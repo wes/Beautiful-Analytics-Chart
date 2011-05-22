@@ -1,34 +1,38 @@
 (function() {
 
-Raphael.fn.drawGrid = function(x, y, w, h, hv, size, step, color) {
-	color = color || "#cacaca";
+Raphael.fn.drawGrid = function(x, y, width, height, x_step, x_size, y_step, y_size) {
 	var path,
-	rowHeight = h / hv,
-	columnWidth = Math.ceil(w / size);
+		rowHeight,
+		rowsCount,
+		columnWidth;
 	
-	// frame
+	// frame border
 	path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5,
-			"L", Math.round(x + w) + 0.5, Math.round(y) + 0.5,
-			Math.round(x + w) + 0.5, Math.round(y + h) + 0.5,
-			Math.round(x) + 0.5, Math.round(y + h) + 0.5,
+			"L", Math.round(x + width) + 0.5, Math.round(y) + 0.5,
+			Math.round(x + width) + 0.5, Math.round(y + height) + 0.5,
+			Math.round(x) + 0.5, Math.round(y + height) + 0.5,
 			Math.round(x) + 0.5, Math.round(y) + 0.5];
 	
 	// horizontal lines
-	for (var i = 1; i < hv; i++) {
+	rowsCount = y_step ? Math.ceil(y_size / y_step) : 10;
+	rowHeight = Math.ceil(height / rowsCount);
+	for (var i = 0; i < rowsCount; i++) {
 		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5,
-							"H", Math.round(x + w) + 0.5]);
+							"H", Math.round(x + width) + 0.5]);
 	}
 	
 	// vertical lines
-	for (i=0; i < size; i+= step) {
-		var xa = i/(step+1);
-		path = path.concat(["M", Math.round(x + i * columnWidth + xa) + 0.5, Math.round(y) + 0.5,
-							"V", Math.round(y + h) + 0.5]);
+	if (!x_step) {
+		x_step = 1;
+		x_size = 10;
+	}
+	columnWidth = Math.ceil(width / x_size);
+	for (i = 0; i < x_size; i+= x_step) {
+		path = path.concat(["M", Math.round(x + i * (columnWidth + 1.1)) + 0.5, Math.round(y) + 0.5,
+							"V", Math.round(y + height) + 0.5]);
 	}
 	
-	return this.path(path.join(",")).attr({
-		stroke: color
-	});
+	return this.path(path.join(","));
 };
 
 Raphael.fn.popup = function(X, Y, set, position, ret) {
@@ -168,6 +172,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		mousecoords = !conf.mousecoords ? 'rect': conf.mousecoords,
 		nogrid = !conf.nogrid ? false: conf.nogrid,
 		x_labels = !conf.x_labels ? false: conf.x_labels, // either false or a step integer
+		y_labels = !conf.y_labels ? false: conf.y_labels, // either false or a step integer
 		datatotal = [],
 		
 		getAnchors = function(p1x, p1y, p2x, p2y, p3x, p3y) {
@@ -229,7 +234,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		table = loadTableData(data_holder), //TODO allow passing data by array
 		width = spewidth,
 		height = 250,
-		leftgutter = 0,
+		leftgutter = 30,
 		bottomgutter = 50,
 		topgutter = 20,
 		colorhue = 0.6 || Math.random(),
@@ -339,15 +344,28 @@ Raphael.fn.drawLineChart = function(conf) {
 		x,
 		y;
 	
+	// draw background grid
 	if (!r.gridDrawn && nogrid === false) {
 		var grid = r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5,
 					width - leftgutter - X, height - topgutter - bottomgutter,
-					10, table.labels.length, (x_labels || 3), "#eaeaea");
+					x_labels, table.labels.length, y_labels, max).attr({
+						stroke: "#eaeaea"
+					});
 		
 		grid.toBack();
 	}
 	r.gridDrawn = true;
 	
+	// draw y axis labels
+	if (y_labels) {
+		var y_labels_count = Math.round(max / y_labels),
+			y_label_height = (height - topgutter - bottomgutter) / y_labels_count;
+		for (var j = 0; j <= y_labels_count; j++) {
+			r.text(leftgutter, height - bottomgutter - (j * y_label_height), j * y_labels).attr(txt);
+		}
+	}
+	
+	// prepare popup
 	//TODO ??
 	label.push(r.text(60, 12, "24 hits").attr(txt1));
 	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
