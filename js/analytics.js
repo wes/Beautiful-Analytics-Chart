@@ -1,4 +1,3 @@
-var gridHasBeenDrawn = false;
 Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	color = color || "#cacaca";
 	var path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5, "L", Math.round(x + w) + 0.5, Math.round(y) + 0.5, Math.round(x + w) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y) + 0.5],
@@ -195,7 +194,6 @@ Raphael.fn.drawLineChart = function(conf) {
 		x, y;
 		
 	for (var i = 0, ii = labels.length; i < ii; i++) {
-		var t = gridHasBeenDrawn[r] === false ? labels.length > 120 ? i % 2 === 0 ? false: r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
 		y = Math.round(height - bottomgutter - Y * data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
@@ -237,7 +235,6 @@ Raphael.fn.drawLineChart = function(conf) {
 		var rect = blanket[blanket.length - 1];
 		bindHoverEvent(x, y, data[i], datatotal[i], labels[i], lines1[i], lines2[i], dot);
 	}
-	gridHasBeenDrawn[r] = true;
 	p = p.concat([x, y, x, y]);
 	bgpp = bgpp.concat([x, y, x, y, "L", x, height - bottomgutter, "z"]);
 	path.attr({
