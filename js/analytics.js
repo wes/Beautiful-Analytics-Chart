@@ -1,16 +1,31 @@
 (function() {
-	
-Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
+
+Raphael.fn.drawGrid = function(x, y, w, h, hv, size, step, color) {
 	color = color || "#cacaca";
-	var path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5, "L", Math.round(x + w) + 0.5, Math.round(y) + 0.5, Math.round(x + w) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y) + 0.5],
+	var path,
 	rowHeight = h / hv,
-	columnWidth = w / wv;
+	columnWidth = Math.ceil(w / size);
+	
+	// frame
+	path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5,
+			"L", Math.round(x + w) + 0.5, Math.round(y) + 0.5,
+			Math.round(x + w) + 0.5, Math.round(y + h) + 0.5,
+			Math.round(x) + 0.5, Math.round(y + h) + 0.5,
+			Math.round(x) + 0.5, Math.round(y) + 0.5];
+	
+	// horizontal lines
 	for (var i = 1; i < hv; i++) {
-		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5, "H", Math.round(x + w) + 0.5]);
+		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5,
+							"H", Math.round(x + w) + 0.5]);
 	}
-	for (i = 1; i < wv; i++) {
-		path = path.concat(["M", Math.round(x + i * columnWidth) + 0.5, Math.round(y) + 0.5, "V", Math.round(y + h) + 0.5]);
+	
+	// vertical lines
+	for (i=0; i < size; i+= step) {
+		var xa = i/(step+1);
+		path = path.concat(["M", Math.round(x + i * columnWidth + xa) + 0.5, Math.round(y) + 0.5,
+							"V", Math.round(y + h) + 0.5]);
 	}
+	
 	return this.path(path.join(",")).attr({
 		stroke: color
 	});
@@ -152,6 +167,7 @@ Raphael.fn.drawLineChart = function(conf) {
 		linecolor2 = !conf.linecolor2 ? conf.mastercolor: conf.linecolor2,
 		mousecoords = !conf.mousecoords ? 'rect': conf.mousecoords,
 		nogrid = !conf.nogrid ? false: conf.nogrid,
+		x_labels = !conf.x_labels ? false: conf.x_labels, // either false or a step integer
 		datatotal = [],
 		
 		getAnchors = function(p1x, p1y, p2x, p2y, p3x, p3y) {
@@ -324,7 +340,11 @@ Raphael.fn.drawLineChart = function(conf) {
 		y;
 	
 	if (!r.gridDrawn && nogrid === false) {
-		r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
+		var grid = r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5,
+					width - leftgutter - X, height - topgutter - bottomgutter,
+					10, table.labels.length, (x_labels || 3), "#eaeaea");
+		
+		grid.toBack();
 	}
 	r.gridDrawn = true;
 	
@@ -346,13 +366,20 @@ Raphael.fn.drawLineChart = function(conf) {
 	for (var i = 0, ii = table.labels.length; i < ii; i++) {
 		var dot, rect;
 		
+		// calculate current x, y
 		y = Math.round(height - bottomgutter - Y * table.data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
+		
+		// x-axis labels
+		if (x_labels && (i % x_labels === 0)) {
+			r.text(x, height - 6, table.labels[i]).attr(txt).toBack();
+		}
+		
 		if (!i) {
 			p = ["M", x, y, "C", x, y];
 			bgpp = ["M", leftgutter + X * 0.5, height - bottomgutter, "L", x, y, "C", x, y];
 		}
-		if (i && i < ii - 1) {
+		else if (i < ii - 1) {
 			var Y0 = Math.round(height - bottomgutter - Y * table.data[i - 1]),
 			X0 = Math.round(leftgutter + X * (i - 0.5)),
 			Y2 = Math.round(height - bottomgutter - Y * table.data[i + 1]),
