@@ -123,10 +123,71 @@ function drawLine(conf) {
 		"fill-opacity": 0.8
 	}).hide();
 	var p, bgpp;
+	var bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot) {
+		var timer, i = 0;
+		rect.hover(function() {
+			clearTimeout(leave_timer);
+			var side = "right";
+			if (x + frame.getBBox().width > width) {
+				side = "left";
+			}
+			var ppp = r.popup(x, y, label, side, 1);
+			if (mousecoords == 'circle') {
+				frame.attr({
+					path: ppp.path,
+					width: '200px'
+				}).show();
+				label[0].attr({
+					text: line1,
+					fill: linecolor1,
+					translation: [ppp.dx, ppp.dy]
+				}).show();
+				label[1].attr({
+					text: line2,
+					fill: linecolor2,
+					translation: [ppp.dx, ppp.dy]
+				}).show();
+			} else if (mousecoords == 'rect') {
+				frame.show().stop().animate({
+					path: ppp.path
+				},
+				200 * is_label_visible);
+				label[0].attr({
+					text: line1
+				}).show().stop().animateWith(frame, {
+					translation: [ppp.dx, ppp.dy]
+				},
+				200 * is_label_visible);
+				label[1].attr({
+					text: line2
+				}).show().stop().animateWith(frame, {
+					translation: [ppp.dx, ppp.dy]
+				},
+				200 * is_label_visible);
+			}
+			frame.toFront();
+			label[0].toFront();
+			label[1].toFront();
+			this.toFront();
+			dot.attr("r", 6);
+			is_label_visible = true;
+		},
+		function() {
+			dot.attr("r", 4);
+			leave_timer = setTimeout(function() {
+				frame.hide();
+				label[0].hide();
+				label[1].hide();
+				is_label_visible = false;
+			},
+			1);
+		});
+	};
+	var x, y;
 	for (var i = 0, ii = labels.length; i < ii; i++) {
-		var y = Math.round(height - bottomgutter - Y * data[i]),
-			x = Math.round(leftgutter + X * (i + 0.5)),
-			t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
+		var t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
+		y = Math.round(height - bottomgutter - Y * data[i]);
+		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
 			p = ["M", x, y, "C", x, y];
 			bgpp = ["M", leftgutter + X * 0.5, height - bottomgutter, "L", x, y, "C", x, y];
@@ -164,66 +225,7 @@ function drawLine(conf) {
 			}));
 		}
 		var rect = blanket[blanket.length - 1];
-		(function(x, y, data, datatotal, lbl, line1, line2, dot) {
-			var timer, i = 0;
-			rect.hover(function() {
-				clearTimeout(leave_timer);
-				var side = "right";
-				if (x + frame.getBBox().width > width) {
-					side = "left";
-				}
-				var ppp = r.popup(x, y, label, side, 1);
-				if (mousecoords == 'circle') {
-					frame.attr({
-						path: ppp.path,
-						width: '200px'
-					}).show();
-					label[0].attr({
-						text: line1,
-						fill: linecolor1,
-						translation: [ppp.dx, ppp.dy]
-					}).show();
-					label[1].attr({
-						text: line2,
-						fill: linecolor2,
-						translation: [ppp.dx, ppp.dy]
-					}).show();
-				} else if (mousecoords == 'rect') {
-					frame.show().stop().animate({
-						path: ppp.path
-					},
-					200 * is_label_visible);
-					label[0].attr({
-						text: line1
-					}).show().stop().animateWith(frame, {
-						translation: [ppp.dx, ppp.dy]
-					},
-					200 * is_label_visible);
-					label[1].attr({
-						text: line2
-					}).show().stop().animateWith(frame, {
-						translation: [ppp.dx, ppp.dy]
-					},
-					200 * is_label_visible);
-				}
-				frame.toFront();
-				label[0].toFront();
-				label[1].toFront();
-				this.toFront();
-				dot.attr("r", 6);
-				is_label_visible = true;
-			},
-			function() {
-				dot.attr("r", 4);
-				leave_timer = setTimeout(function() {
-					frame.hide();
-					label[0].hide();
-					label[1].hide();
-					is_label_visible = false;
-				},
-				1);
-			});
-		})(x, y, data[i], datatotal[i], labels[i], lines1[i], lines2[i], dot);
+		bindHoverEvent(x, y, data[i], datatotal[i], labels[i], lines1[i], lines2[i], dot);
 	}
 	gridHasBeenDrawn[holder] = true;
 	p = p.concat([x, y, x, y]);
@@ -238,7 +240,8 @@ function drawLine(conf) {
 	label[0].toFront();
 	label[1].toFront();
 	blanket.toFront();
-} (function() {
+}
+(function() {
 	var tokenRegex = /\{([^\}]+)\}/g,
 		objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
 		replacer = function(all, key, obj) {
@@ -249,10 +252,10 @@ function drawLine(conf) {
 				if (name in res) {
 					res = res[name];
 				}
-				typeof res == "function" && isFunc && (res = res());
+				return (typeof res == "function") && isFunc && (res = res());
 			}
 		});
-		res = (res == null || res == obj ? all : res) + "";
+		res = (res === null || res == obj ? all : res) + "";
 		return res;
 	},
 		fill = function(str, obj) {
