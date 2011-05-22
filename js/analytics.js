@@ -1,9 +1,8 @@
 (function() {
 
-Raphael.fn.drawGrid = function(x, y, width, height, x_step, x_size, y_step, y_size) {
+Raphael.fn.drawGrid = function(x, y, width, height, x_step, x_size, y_count, y_size) {
 	var path,
 		rowHeight,
-		rowsCount,
 		columnWidth;
 	
 	// frame border
@@ -14,9 +13,8 @@ Raphael.fn.drawGrid = function(x, y, width, height, x_step, x_size, y_step, y_si
 			Math.round(x) + 0.5, Math.round(y) + 0.5];
 	
 	// horizontal lines
-	rowsCount = y_step ? Math.ceil(y_size / y_step) : 10;
-	rowHeight = Math.ceil(height / rowsCount);
-	for (var i = 0; i < rowsCount; i++) {
+	rowHeight = Math.ceil(height / y_count);
+	for (var i = 0; i < y_count; i++) {
 		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5,
 							"H", Math.round(x + width) + 0.5]);
 	}
@@ -222,9 +220,9 @@ Raphael.fn.lineChart = function(method) {
 								gutter.top + 0.5,
 								width - gutter.left - X,
 								height - gutter.top - gutter.bottom,
-								this.lineChart.settings.x_labels,
+								this.lineChart.settings.x_labels_step,
 								size,
-								this.lineChart.settings.y_labels,
+								this.lineChart.settings.y_labels_count,
 								max)
 							.attr({ stroke: "#eaeaea" });
 
@@ -233,9 +231,10 @@ Raphael.fn.lineChart = function(method) {
 			this.lineChart.gridDrawn = true;
 
 			// draw y axis labels
-			if (this.lineChart.settings.y_labels) {
-				helpers.drawYlabels(element, gutter.left, gutter.bottom,
-							height, this.lineChart.settings.y_labels,
+			this.lineChart.YLabels = [];
+			if (this.lineChart.settings.y_labels_count) {
+				helpers.drawYLabels(element, gutter.left, gutter.bottom,
+							height, this.lineChart.settings.y_labels_count,
 							max, gutter.top, this.lineChart.settings.text.axis_labels);
 			}
 
@@ -264,7 +263,7 @@ Raphael.fn.lineChart = function(method) {
 				x = Math.round(gutter.left + X * (i + 0.5));
 
 				// x-axis labels
-				if (this.lineChart.settings.x_labels && (i % this.lineChart.settings.x_labels === 0)) {
+				if (this.lineChart.settings.x_labels_step && (i % this.lineChart.settings.x_labels_step === 0)) {
 					element.text(x, height - gutter.bottom + 18, table.labels[i])
 						.attr(this.lineChart.settings.text.axis_labels).toBack();
 				}
@@ -340,7 +339,8 @@ Raphael.fn.lineChart = function(method) {
 		
 		// Caution: this would only work for the same number of records
 		setDataHolder: function(id) {
-			var width = this.lineChart.settings.width,
+			var element = this,
+				width = this.lineChart.settings.width,
 				height = this.lineChart.settings.height,
 				gutter = this.lineChart.settings.gutter,
 				
@@ -367,7 +367,6 @@ Raphael.fn.lineChart = function(method) {
 				y = Math.round(height - gutter.bottom - Y * table.data[i]);
 				x = Math.round(gutter.left + X * (i + 0.5));
 				
-				//??
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					bgpp = ["M", gutter.left + X * 0.5, height - gutter.bottom, "L", x, y, "C", x, y];
@@ -396,6 +395,8 @@ Raphael.fn.lineChart = function(method) {
 					line2: table.lines2[i]
 				};
 			}
+			
+			// animate paths
 			p = p.concat([x, y, x, y]);
 			bgpp = bgpp.concat([x, y, x, y, "L", x, height - gutter.bottom, "z"]);
 			this.lineChart.path.animate({path: p},
@@ -404,6 +405,16 @@ Raphael.fn.lineChart = function(method) {
 			this.lineChart.bgp.animate({path: bgpp},
 					this.lineChart.settings.animation.speed,
 					this.lineChart.settings.animation.easing);
+			
+			// update y axis
+			
+
+			// draw y axis labels
+			if (this.lineChart.settings.y_labels_count) {
+				helpers.drawYLabels(element, gutter.left, gutter.bottom,
+							height, this.lineChart.settings.y_labels_count,
+							max, gutter.top, this.lineChart.settings.text.axis_labels);
+			}
 		}
 		
 	};
@@ -551,14 +562,23 @@ Raphael.fn.lineChart = function(method) {
 			rect.hover(f_in, f_out);
 		},
 		
-		drawYlabels: function(elm, x, y, height, step, max, top, style) {
-			var count = Math.round(max / step),
+		drawYLabels: function(elm, x, y, height, count, max, top, style) {
+			var step = Math.floor(max / count),
 				labelHeight = (height - top - y) / count;
-
+			
+			// reset old labels
+			if (elm.lineChart.YLabels.length) {
+				for (var i = 0; i < elm.lineChart.YLabels.length; i++) {
+					elm.lineChart.YLabels[i].remove();
+				}
+			}
+			
+			elm.lineChart.YLabels = [];
 			for (var j = 0; j <= count; j++) {
-				elm.text(x,
-						height - y - (j * labelHeight),
-						j * step).attr(style);
+				var l = elm.text(x,
+							height - y - (j * labelHeight),
+							j * step).attr(style);
+				elm.lineChart.YLabels.push(l);
 			}
 		}
 	};
@@ -588,8 +608,8 @@ Raphael.fn.lineChart.defaults = {
 	show_area: false,
 	mouse_coords: 'rect',
 	no_grid: false,
-	x_labels: false, // either false or a step integer
-	y_labels: false,  // either false or a step integer
+	x_labels_step: false, // either false or a step integer
+	y_labels_count: false,  // either false or a labels count
 	animation: {
 		speed: 600,
 		easing: "backOut"
