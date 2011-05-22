@@ -177,8 +177,9 @@ Raphael.fn.lineChart = function(method) {
 				height = this.lineChart.settings.height,
 				
 				table = helpers.loadTableData(this.lineChart.settings.data_holder), //TODO allow passing data by array
+				size = table.labels.length,
 				
-				X = (width - gutter.left) / table.labels.length,
+				X = (width - gutter.left) / size,
 				max = Math.max.apply(Math, table.data),
 				Y = (height - gutter.bottom - gutter.top) / max,
 				
@@ -187,7 +188,8 @@ Raphael.fn.lineChart = function(method) {
 				bgpp,
 				x,
 				y;
-				
+			
+			this.lineChart.size = size;
 			this.lineChart.dots = [];
 			this.lineChart.rects = [];
 			this.lineChart.info = [];
@@ -221,7 +223,7 @@ Raphael.fn.lineChart = function(method) {
 								width - gutter.left - X,
 								height - gutter.top - gutter.bottom,
 								this.lineChart.settings.x_labels,
-								table.labels.length,
+								size,
 								this.lineChart.settings.y_labels,
 								max)
 							.attr({ stroke: "#eaeaea" });
@@ -254,7 +256,7 @@ Raphael.fn.lineChart = function(method) {
 				"fill-opacity": 0.8
 			}).hide();
 			
-			for (var i = 0, ii = table.labels.length; i < ii; i++) {
+			for (var i = 0, ii = size; i < ii; i++) {
 				var dot, rect;
 
 				// calculate current x, y
@@ -349,6 +351,13 @@ Raphael.fn.lineChart = function(method) {
 				Y = (height - gutter.bottom - gutter.top) / max,
 				
 				p, bgpp;
+			
+			if (table.labels.length != this.lineChart.size) {
+				if (console && console.error) {
+					console.error('Error: new data source has to be of same size');
+					return false;
+				}
+			}
 			
 			for (var i = 0, ii = table.labels.length; i < ii; i++) {
 				var dot = this.lineChart.dots[i],
