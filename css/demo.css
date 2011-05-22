@@ -146,3 +146,29 @@ pre * { font-family: monaco; }
 .number {
     color:#FF73FD;
 }
+
+
+table {
+	border: 0px;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	background-color: #526d9e;
+	font-size: 11px;
+}
+table th {
+	background-color: #526d9e;
+	color: #fff;
+	border-bottom-width: 2px;
+	font-weight: bold;
+}
+table th,
+table td {;
+	padding: 4px;
+	border: 1px #fff solid;
+}
+table tr td {
+	background-color: #ddd;
+}
+table tr:nth-child(odd) td {
+	background-color: #bacbcb;
+}

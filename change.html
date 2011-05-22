@@ -1,0 +1,339 @@
+<html>
+<head>
+	<title>Beautiful Analytics Chart</title>
+	<link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" title="Demo Stylesheet" charset="utf-8">
+	<script type='text/javascript' src='js/lib/raphael.js'></script>
+	<script type='text/javascript' src='js/analytics.js'></script>
+	<script type='text/javascript'>
+		window.onload = function(){
+			var w = 840;
+			d = 2;
+			h3 = Raphael('beautiful-line-chart3', w, 250);
+			h3.lineChart({
+        data_holder: 'd2',
+        width: w,
+        show_area: true,
+        mouse_coords: 'rect',
+        x_labels_step: 3,
+        y_labels_count: 4,
+        colors: {
+          master: '#d90000'
+        }
+      });
+    };
+    change = function() {
+      if (d == 2) {
+        h3.lineChart('setDataHolder', 'd1');
+        document.getElementById('d1').style.display = 'block';
+        document.getElementById('d2').style.display = 'none';
+        d = 1;
+      }
+      else {
+        h3.lineChart('setDataHolder', 'd2');
+        document.getElementById('d2').style.display = 'block';
+        document.getElementById('d1').style.display = 'none';
+        d = 2;
+      }
+    }
+	</script>
+</head>
+<body>
+	
+	<div id='main'>
+
+		<div class='box'>
+			<div class='inner'>
+				<div id='beautiful-line-chart3'></div>
+			</div>
+		</div>
+		<button onclick="change();">change data</button>
+	
+		<table id="d2" style=''>
+  			<tfoot>
+  					<tr>
+  									<th>2/02</th>
+  									<th>2/03</th>
+  									<th>2/09</th>
+  									<th>2/16</th>
+  									<th>2/18</th>
+  									<th>2/21</th>
+  									<th>2/22</th>
+  									<th>2/28</th>
+  									<th>2/29</th>
+  									<th>2/30</th>
+  									<th>2/31</th>
+  									<th>2/01</th>
+  									<th>2/02</th>
+  									<th>2/04</th>
+  									<th>2/05</th>
+  									<th>2/06</th>
+  									<th>2/07</th>
+  									<th>2/08</th>
+  									<th>2/09</th>
+  									<th>2/10</th>
+  									<th>2/12</th>
+  									<th>2/13</th>
+  									<th>2/14</th>
+  									<th>2/15</th>
+  									<th>2/16</th>
+  									<th>2/17</th>
+  									<th>2/18</th>
+  									<th>2/19</th>
+  									<th>2/20</th>
+  									<th>2/21</th>
+  									<th>2/22</th>
+  							</tr>
+  			</tfoot>
+  			<tbody class='data'>
+  					<tr>
+  									<td>70</td>
+  									<td>140</td>
+  									<td>350</td>
+  									<td>840</td>
+  									<td>945</td>
+  									<td>1015</td>
+  									<td>1015</td>
+  									<td>1120</td>
+  									<td>1120</td>
+  									<td>1330</td>
+  									<td>1330</td>
+  									<td>1400</td>
+  									<td>1400</td>
+  									<td>1470</td>
+  									<td>1715</td>
+  									<td>2065</td>
+  									<td>2065</td>
+  									<td>2345</td>
+  									<td>2520</td>
+  									<td>2730</td>
+  									<td>2870</td>
+  									<td>3080</td>
+  									<td>3290</td>
+  									<td>3710</td>
+  									<td>3780</td>
+  									<td>3920</td>
+  									<td>3990</td>
+  									<td>5075</td>
+  									<td>5950</td>
+  									<td>6300</td>
+  									<td>6475</td>
+  						</tr>
+  			</tbody>
+  			<tbody class='line1'>
+  					<tr>
+  									<td>70 Users</td>
+  									<td>140 Users</td>
+  									<td>350 Users</td>
+  									<td>840 Users</td>
+  									<td>945 Users</td>
+  									<td>1,015 Users</td>
+  									<td>1,015 Users</td>
+  									<td>1,120 Users</td>
+  									<td>1,120 Users</td>
+  									<td>1,330 Users</td>
+  									<td>1,330 Users</td>
+  									<td>1,400 Users</td>
+  									<td>1,400 Users</td>
+  									<td>1,470 Users</td>
+  									<td>1,715 Users</td>
+  									<td>2,065 Users</td>
+  									<td>2,065 Users</td>
+  									<td>2,345 Users</td>
+  									<td>2,520 Users</td>
+  									<td>2,730 Users</td>
+  									<td>2,870 Users</td>
+  									<td>3,080 Users</td>
+  									<td>3,290 Users</td>
+  									<td>3,710 Users</td>
+  									<td>3,780 Users</td>
+  									<td>3,920 Users</td>
+  									<td>3,990 Users</td>
+  									<td>5,075 Users</td>
+  									<td>5,950 Users</td>
+  									<td>6,300 Users</td>
+  									<td>6,475 Users</td>
+  						</tr>
+  			</tbody>
+  			<tbody class='line2'>
+  					<tr>
+  									<td>Mar 2nd 2011</td>
+  									<td>Mar 3rd 2011</td>
+  									<td>Mar 9th 2011</td>
+  									<td>Mar 16th 2011</td>
+  									<td>Mar 18th 2011</td>
+  									<td>Mar 21st 2011</td>
+  									<td>Mar 22nd 2011</td>
+  									<td>Mar 28th 2011</td>
+  									<td>Mar 29th 2011</td>
+  									<td>Mar 30th 2011</td>
+  									<td>Mar 31st 2011</td>
+  									<td>Apr 1st 2011</td>
+  									<td>Apr 2nd 2011</td>
+  									<td>Apr 4th 2011</td>
+  									<td>Apr 5th 2011</td>
+  									<td>Apr 6th 2011</td>
+  									<td>Apr 7th 2011</td>
+  									<td>Apr 8th 2011</td>
+  									<td>Apr 9th 2011</td>
+  									<td>Apr 10th 2011</td>
+  									<td>Apr 12th 2011</td>
+  									<td>Apr 13th 2011</td>
+  									<td>Apr 14th 2011</td>
+  									<td>Apr 15th 2011</td>
+  									<td>Apr 16th 2011</td>
+  									<td>Apr 17th 2011</td>
+  									<td>Apr 18th 2011</td>
+  									<td>Apr 19th 2011</td>
+  									<td>Apr 20th 2011</td>
+  									<td>Apr 21st 2011</td>
+  									<td>Apr 22nd 2011</td>
+  						</tr>
+  			</tbody>
+  	</table>
+  	
+  	
+  	
+  	<table id="d1" style='display: none;'>
+  			<tfoot>
+  					<tr>
+  									<th>3/02</th>
+  									<th>3/03</th>
+  									<th>3/09</th>
+  									<th>3/16</th>
+  									<th>3/18</th>
+  									<th>3/21</th>
+  									<th>3/22</th>
+  									<th>3/28</th>
+  									<th>3/29</th>
+  									<th>3/30</th>
+  									<th>3/31</th>
+  									<th>4/01</th>
+  									<th>4/02</th>
+  									<th>4/04</th>
+  									<th>4/05</th>
+  									<th>4/06</th>
+  									<th>4/07</th>
+  									<th>4/08</th>
+  									<th>4/09</th>
+  									<th>4/10</th>
+  									<th>4/12</th>
+  									<th>4/13</th>
+  									<th>4/14</th>
+  									<th>4/15</th>
+  									<th>4/16</th>
+  									<th>4/17</th>
+  									<th>4/18</th>
+  									<th>4/19</th>
+  									<th>4/20</th>
+  									<th>4/21</th>
+  									<th>4/22</th>
+  							</tr>
+  			</tfoot>
+  			<tbody class='data'>
+  					<tr>
+  									<td>7</td>
+  									<td>7</td>
+  									<td>21</td>
+  									<td>49</td>
+  									<td>10</td>
+  									<td>7</td>
+  									<td>0</td>
+  									<td>10</td>
+  									<td>0</td>
+  									<td>21</td>
+  									<td>0</td>
+  									<td>7</td>
+  									<td>0</td>
+  									<td>7</td>
+  									<td>24</td>
+  									<td>35</td>
+  									<td>0</td>
+  									<td>28</td>
+  									<td>17</td>
+  									<td>21</td>
+  									<td>14</td>
+  									<td>21</td>
+  									<td>21</td>
+  									<td>42</td>
+  									<td>7</td>
+  									<td>14</td>
+  									<td>7</td>
+  									<td>108</td>
+  									<td>87</td>
+  									<td>35</td>
+  									<td>17</td>
+  						</tr>
+  			</tbody>
+  			<tbody class='line1'>
+  					<tr>
+  									<td>70 Views</td>
+  									<td>70 Views</td>
+  									<td>210 Views</td>
+  									<td>490 Views</td>
+  									<td>105 Views</td>
+  									<td>70 Views</td>
+  									<td>0 Views</td>
+  									<td>105 Views</td>
+  									<td>0 Views</td>
+  									<td>210 Views</td>
+  									<td>0 Views</td>
+  									<td>70 Views</td>
+  									<td>0 Views</td>
+  									<td>70 Views</td>
+  									<td>245 Views</td>
+  									<td>350 Views</td>
+  									<td>0 Views</td>
+  									<td>280 Views</td>
+  									<td>175 Views</td>
+  									<td>210 Views</td>
+  									<td>140 Views</td>
+  									<td>210 Views</td>
+  									<td>210 Views</td>
+  									<td>420 Views</td>
+  									<td>70 Views</td>
+  									<td>140 Views</td>
+  									<td>70 Views</td>
+  									<td>1,085 Views</td>
+  									<td>875 Views</td>
+  									<td>350 Views</td>
+  									<td>175 Views</td>
+  						</tr>
+  			</tbody>
+  			<tbody class='line2'>
+  					<tr>
+  									<td>Mar 2nd 2011</td>
+  									<td>Mar 3rd 2011</td>
+  									<td>Mar 9th 2011</td>
+  									<td>Mar 16th 2011</td>
+  									<td>Mar 18th 2011</td>
+  									<td>Mar 21st 2011</td>
+  									<td>Mar 22nd 2011</td>
+  									<td>Mar 28th 2011</td>
+  									<td>Mar 29th 2011</td>
+  									<td>Mar 30th 2011</td>
+  									<td>Mar 31st 2011</td>
+  									<td>Apr 1st 2011</td>
+  									<td>Apr 2nd 2011</td>
+  									<td>Apr 4th 2011</td>
+  									<td>Apr 5th 2011</td>
+  									<td>Apr 6th 2011</td>
+  									<td>Apr 7th 2011</td>
+  									<td>Apr 8th 2011</td>
+  									<td>Apr 9th 2011</td>
+  									<td>Apr 10th 2011</td>
+  									<td>Apr 12th 2011</td>
+  									<td>Apr 13th 2011</td>
+  									<td>Apr 14th 2011</td>
+  									<td>Apr 15th 2011</td>
+  									<td>Apr 16th 2011</td>
+  									<td>Apr 17th 2011</td>
+  									<td>Apr 18th 2011</td>
+  									<td>Apr 19th 2011</td>
+  									<td>Apr 20th 2011</td>
+  									<td>Apr 21st 2011</td>
+  									<td>Apr 22nd 2011</td>
+  						</tr>
+  			</tbody>
+  	</table>
+</body>
+</html>
