@@ -162,20 +162,193 @@ Raphael.fn.popup = function(X, Y, set, position, ret) {
 	return out;
 };
 
-Raphael.fn.drawLineChart = function(conf) {
-	var data_holder = !conf.data_holder ? '': conf.data_holder,
-		mastercolor = !conf.mastercolor ? '#01A8F0': conf.mastercolor,
-		spewidth = !conf.spewidth ? 500: conf.spewidth,
-		showarea = !conf.showarea ? false: conf.showarea,
-		linecolor1 = !conf.linecolor1 ? '#000000': conf.linecolor1,
-		linecolor2 = !conf.linecolor2 ? conf.mastercolor: conf.linecolor2,
-		mousecoords = !conf.mousecoords ? 'rect': conf.mousecoords,
-		nogrid = !conf.nogrid ? false: conf.nogrid,
-		x_labels = !conf.x_labels ? false: conf.x_labels, // either false or a step integer
-		y_labels = !conf.y_labels ? false: conf.y_labels, // either false or a step integer
-		datatotal = [],
+Raphael.fn.lineChart = function(method) {
+	
+	// public methods
+	var methods = {
 		
-		getAnchors = function(p1x, p1y, p2x, p2y, p3x, p3y) {
+		init: function(options) {
+			this.lineChart.settings = helpers.extend(this.lineChart.defaults, options);
+			
+			// let's go
+			var element = this,
+				gutter = this.lineChart.settings.gutter,
+				width = this.lineChart.settings.width,
+				height = this.lineChart.settings.height,
+				
+				table = helpers.loadTableData(this.lineChart.settings.data_holder), //TODO allow passing data by array
+				
+				X = (width - gutter.left) / table.labels.length,
+				max = Math.max.apply(Math, table.data),
+				Y = (height - gutter.bottom - gutter.top) / max,
+				
+				//TODO allow customizing
+				path = element.path().attr({
+					stroke: this.lineChart.settings.colors.master,
+					"stroke-width": 4,
+					"stroke-linejoin": "round"
+				}),
+				label = element.set(),
+				is_label_visible = false,
+				blanket = element.set(),
+				frame,
+				p,
+				bgp,
+				bgpp,
+				x,
+				y;
+			
+			// chart area
+			//TODO allow customizing
+			if (this.lineChart.settings.show_area) {
+				bgp = element.path().attr({
+					stroke: "none",
+					opacity: 0.3,
+					fill: this.lineChart.settings.colors.master
+				});
+			}
+			else {
+				bgp = element.path().attr({
+					stroke: "none",
+					opacity: 0,
+					fill: this.lineChart.settings.colors.master
+				}).hide();
+			}
+			
+			// draw background grid
+			if (!this.lineChart.gridDrawn && this.lineChart.settings.no_grid === false) {
+				var grid = element.drawGrid(gutter.left + X * 0.5 + 0.5,
+								gutter.top + 0.5,
+								width - gutter.left - X,
+								height - gutter.top - gutter.bottom,
+								this.lineChart.settings.x_labels,
+								table.labels.length,
+								this.lineChart.settings.y_labels,
+								max)
+							.attr({ stroke: "#eaeaea" });
+
+				grid.toBack();
+			}
+			this.lineChart.gridDrawn = true;
+
+			// draw y axis labels
+			if (this.lineChart.settings.y_labels) {
+				helpers.drawYlabels(element, gutter.left, gutter.bottom,
+							height, this.lineChart.settings.y_labels,
+							max, gutter.top, this.lineChart.settings.text.axis_labels);
+			}
+
+			// prepare popup
+			//TODO ??
+			label.push(element.text(60, 12, "24 hits").attr(this.lineChart.settings.text.popup_line1));
+			label.push(element.text(60, 27, "22 September 2008").attr(this.lineChart.settings.text.popup_line2).attr({
+				fill: this.lineChart.settings.colors.master
+			}));
+			label.hide();
+
+			//TODO allow customizing
+			frame = element.popup(100, 100, label, "right").attr({
+				fill: "#ffffff",
+				stroke: "#666",
+				"stroke-width": 2,
+				"fill-opacity": 0.8
+			}).hide();
+			
+			
+			for (var i = 0, ii = table.labels.length; i < ii; i++) {
+				var dot, rect;
+
+				// calculate current x, y
+				y = Math.round(height - gutter.bottom - Y * table.data[i]);
+				x = Math.round(gutter.left + X * (i + 0.5));
+
+				// x-axis labels
+				if (this.lineChart.settings.x_labels && (i % this.lineChart.settings.x_labels === 0)) {
+					element.text(x, height - gutter.bottom + 18, table.labels[i])
+						.attr(this.lineChart.settings.text.axis_labels).toBack();
+				}
+
+				if (!i) {
+					p = ["M", x, y, "C", x, y];
+					bgpp = ["M", gutter.left + X * 0.5, height - gutter.bottom, "L", x, y, "C", x, y];
+				}
+				else if (i < ii - 1) {
+					var Y0 = Math.round(height - gutter.bottom - Y * table.data[i - 1]),
+					X0 = Math.round(gutter.left + X * (i - 0.5)),
+					Y2 = Math.round(height - gutter.bottom - Y * table.data[i + 1]),
+					X2 = Math.round(gutter.left + X * (i + 1.5));
+					var a = helpers.getAnchors(X0, Y0, x, y, X2, Y2);
+					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+					bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+				}
+
+				//TODO allow customizing all of these
+				dot = element.circle(x, y, 4).attr({
+					fill: "#ffffff",
+					stroke: this.lineChart.settings.colors.master,
+					"stroke-width": 2
+				});
+				if (y === 0) {
+					dot.attr({
+						opacity: 0
+					});
+				}
+				if (this.lineChart.settings.mouse_coords == 'circle') {
+					blanket.push(element.circle(x, y, 14).attr({
+						stroke: "none",
+						fill: "#fff",
+						opacity: 0
+					}));
+				} else if (this.lineChart.settings.mouse_coords == 'rect') {
+					blanket.push(element.rect(gutter.left + X * i, 0, X, height - gutter.bottom).attr({
+						stroke: "none",
+						fill: "#fff",
+						opacity: 0
+					}));
+				}
+				rect = blanket[blanket.length - 1];
+				
+				helpers.bindHoverEvent(this, x, y, table.data[i], table.labels[i], table.lines1[i], table.lines2[i], dot, rect, frame, label);
+			}
+
+			p = p.concat([x, y, x, y]);
+			bgpp = bgpp.concat([x, y, x, y, "L", x, height - gutter.bottom, "z"]);
+			path.attr({
+				path: p
+			});
+			bgp.attr({
+				path: bgpp
+			});
+			frame.toFront();
+			label[0].toFront();
+			label[1].toFront();
+			blanket.toFront();
+			
+		}
+		
+	};
+	
+	// private methods
+	var helpers = {
+		extend: function(from, to) {
+			if (from === null || typeof from !== "object") return from;
+			if (from.constructor != Object && from.constructor != Array) return from;
+			if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+				from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+				return new from.constructor(from);
+			
+			to = to || new from.constructor();
+			
+			for (var name in from)
+			{
+				if (from.hasOwnProperty(name)) {
+				to[name] = typeof to[name] == "undefined" ? helpers.extend(from[name], null) : to[name];
+				}
+			}
+			return to;
+		},
+		
+		getAnchors: function(p1x, p1y, p2x, p2y, p3x, p3y) {
 			var l1 = (p2x - p1x) / 2,
 				l2 = (p3x - p2x) / 2,
 				a = Math.atan((p2x - p1x) / Math.abs(p2y - p1y)),
@@ -198,7 +371,7 @@ Raphael.fn.drawLineChart = function(conf) {
 			};
 		},
 		
-		loadTableData = function(table_id) {
+		loadTableData: function(table_id) {
 			var table = document.getElementById(table_id),
 				res = {
 					labels: [],
@@ -231,222 +404,126 @@ Raphael.fn.drawLineChart = function(conf) {
 			}
 		},
 		
-		table = loadTableData(data_holder), //TODO allow passing data by array
-		width = spewidth,
-		height = 250,
-		leftgutter = 30,
-		bottomgutter = 50,
-		topgutter = 20,
-		colorhue = 0.6 || Math.random(),
-		color = mastercolor,
-		r = this,
-		//TODO allow customizing of txt, txt1, txt2 styles
-		txt = {
-			font: '10px Helvetica, Arial',
-			fill: "#000000"
-		},
-		txt1 = {
-			font: 'bold 11px Helvetica, Arial',
-			fill: "#000000"
-		},
-		txt2 = {
-			font: 'bold 10px Helvetica, Arial',
-			fill: "#000000"
-		},
-		X = (width - leftgutter) / table.labels.length,
-		max = Math.max.apply(Math, table.data),
-		Y = (height - bottomgutter - topgutter) / max,
-		//TODO allow customizing
-		path = r.path().attr({
-			stroke: color,
-			"stroke-width": 4,
-			"stroke-linejoin": "round"
-		}),
-		//TODO allow customizing
-		bgp = showarea === true ? r.path().attr({
-			stroke: "none",
-			opacity: 0.3,
-			fill: color
-		}) : r.path().attr({
-			stroke: "none",
-			opacity: 0,
-			fill: color
-		}).hide(),
-		label = r.set(),
-		is_label_visible = false,
-		leave_timer,
-		blanket = r.set(),
-		
-		bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot, rect, frame) {
-			var timer,
-			i = 0;
+		//TODO too many parameters
+		bindHoverEvent: function(elm, x, y, data, lbl, line1, line2, dot, rect, frame, label) {
 			rect.hover(function() {
-				clearTimeout(leave_timer);
+				window.clearTimeout(elm.leave_timer);
 				var side = "right";
-				if (x + frame.getBBox().width > width) {
+				if (x + frame.getBBox().width > elm.lineChart.settings.width) {
 					side = "left";
 				}
-				var ppp = r.popup(x, y, label, side, 1);
-				if (mousecoords == 'circle') {
+				var ppp = elm.popup(x, y, label, side, 1);
+				if (elm.lineChart.settings.mouse_coords == 'circle') {
 					frame.attr({
 						path: ppp.path,
 						width: '200px'
 					}).show();
 					label[0].attr({
 						text: line1,
-						fill: linecolor1,
+						fill: elm.lineChart.settings.colors.line1,
 						translation: [ppp.dx, ppp.dy]
 					}).show();
 					label[1].attr({
 						text: line2,
-						fill: linecolor2,
+						fill: elm.lineChart.settings.colors.line2,
 						translation: [ppp.dx, ppp.dy]
 					}).show();
-				} else if (mousecoords == 'rect') {
+				} else if (elm.lineChart.settings.mouse_coords == 'rect') {
 					frame.show().stop().animate({
 						path: ppp.path
 					},
-					200 * is_label_visible);
+					200 * elm.lineChart.is_label_visible);
 					label[0].attr({
 						text: line1
 					}).show().stop().animateWith(frame, {
 						translation: [ppp.dx, ppp.dy]
 					},
-					200 * is_label_visible);
+					200 * elm.lineChart.is_label_visible);
 					label[1].attr({
 						text: line2
 					}).show().stop().animateWith(frame, {
 						translation: [ppp.dx, ppp.dy]
 					},
-					200 * is_label_visible);
+					200 * elm.lineChart.is_label_visible);
 				}
 				frame.toFront();
 				label[0].toFront();
 				label[1].toFront();
 				this.toFront();
 				dot.attr("r", 6);
-				is_label_visible = true;
+				elm.lineChart.is_label_visible = true;
 			},
 			function() {
 				dot.attr("r", 4);
-				leave_timer = setTimeout(function() {
+				
+				elm.leave_timer = window.setTimeout(function() {
 					frame.hide();
 					label[0].hide();
 					label[1].hide();
-					is_label_visible = false;
+					elm.lineChart.is_label_visible = false;
 				},
 				1);
 			});
 		},
-		frame,
-		p,
-		bgpp,
-		x,
-		y;
-	
-	// draw background grid
-	if (!r.gridDrawn && nogrid === false) {
-		var grid = r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5,
-					width - leftgutter - X, height - topgutter - bottomgutter,
-					x_labels, table.labels.length, y_labels, max).attr({
-						stroke: "#eaeaea"
-					});
 		
-		grid.toBack();
-	}
-	r.gridDrawn = true;
+		drawYlabels: function(elm, x, y, height, step, max, top, style) {
+			var count = Math.round(max / step),
+				labelHeight = (height - top - y) / count;
+
+			for (var j = 0; j <= count; j++) {
+				elm.text(x,
+						height - y - (j * labelHeight),
+						j * step).attr(style);
+			}
+		}
+	};
 	
-	// draw y axis labels
-	if (y_labels) {
-		var y_labels_count = Math.round(max / y_labels),
-			y_label_height = (height - topgutter - bottomgutter) / y_labels_count;
-		for (var j = 0; j <= y_labels_count; j++) {
-			r.text(leftgutter, height - bottomgutter - (j * y_label_height), j * y_labels).attr(txt);
+	// go go go!
+	if (methods[method]) {
+		return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+	} else if (typeof method === 'object' || !method) {
+		return methods.init.apply(this, arguments);
+	} else {
+		if (console && console.error) {
+			console.error('lineChart: Method "' + method + '" not found.');
 		}
 	}
-	
-	// prepare popup
-	//TODO ??
-	label.push(r.text(60, 12, "24 hits").attr(txt1));
-	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
-		fill: color
-	}));
-	label.hide();
-	
-	//TODO allow customizing
-	frame = r.popup(100, 100, label, "right").attr({
-		fill: "#ffffff",
-		stroke: "#666",
-		"stroke-width": 2,
-		"fill-opacity": 0.8
-	}).hide();
-		
-	for (var i = 0, ii = table.labels.length; i < ii; i++) {
-		var dot, rect;
-		
-		// calculate current x, y
-		y = Math.round(height - bottomgutter - Y * table.data[i]);
-		x = Math.round(leftgutter + X * (i + 0.5));
-		
-		// x-axis labels
-		if (x_labels && (i % x_labels === 0)) {
-			r.text(x, height - bottomgutter + 18, table.labels[i]).attr(txt).toBack();
+};
+
+Raphael.fn.lineChart.defaults = {
+	data_holder: null,
+	width: 500,
+	height: 250,
+	gutter: {
+		top: 20,
+		right: 0,
+		bottom: 50,
+		left: 30
+	},
+	show_area: false,
+	mouse_coords: 'rect',
+	no_grid: false,
+	x_labels: false, // either false or a step integer
+	y_labels: false,  // either false or a step integer
+	colors: {
+		master: '#01A8F0',
+		line1: '#000000',
+		line2: '#01A8F0',
+	},
+	text: {
+		axis_labels: {
+			font: '10px Helvetica, Arial',
+			fill: "#000000"
+		},
+		popup_line1: {
+			font: 'bold 11px Helvetica, Arial',
+			fill: "#000000"
+		},
+		popup_line2: {
+			font: 'bold 10px Helvetica, Arial',
+			fill: "#000000"
 		}
-		
-		if (!i) {
-			p = ["M", x, y, "C", x, y];
-			bgpp = ["M", leftgutter + X * 0.5, height - bottomgutter, "L", x, y, "C", x, y];
-		}
-		else if (i < ii - 1) {
-			var Y0 = Math.round(height - bottomgutter - Y * table.data[i - 1]),
-			X0 = Math.round(leftgutter + X * (i - 0.5)),
-			Y2 = Math.round(height - bottomgutter - Y * table.data[i + 1]),
-			X2 = Math.round(leftgutter + X * (i + 1.5));
-			var a = getAnchors(X0, Y0, x, y, X2, Y2);
-			p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
-			bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
-		}
-		
-		//TODO allow customizing all of these
-		dot = r.circle(x, y, 4).attr({
-			fill: "#ffffff",
-			stroke: color,
-			"stroke-width": 2
-		});
-		if (y === 0) {
-			dot.attr({
-				opacity: 0
-			});
-		}
-		if (mousecoords == 'circle') {
-			blanket.push(r.circle(x, y, 14).attr({
-				stroke: "none",
-				fill: "#fff",
-				opacity: 0
-			}));
-		} else if (mousecoords == 'rect') {
-			blanket.push(r.rect(leftgutter + X * i, 0, X, height - bottomgutter).attr({
-				stroke: "none",
-				fill: "#fff",
-				opacity: 0
-			}));
-		}
-		rect = blanket[blanket.length - 1];
-		bindHoverEvent(x, y, table.data[i], datatotal[i], table.labels[i], table.lines1[i], table.lines2[i], dot, rect, frame);
 	}
-	
-	p = p.concat([x, y, x, y]);
-	bgpp = bgpp.concat([x, y, x, y, "L", x, height - bottomgutter, "z"]);
-	path.attr({
-		path: p
-	});
-	bgp.attr({
-		path: bgpp
-	});
-	frame.toFront();
-	label[0].toFront();
-	label[1].toFront();
-	blanket.toFront();
 };
 
 })();

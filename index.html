@@ -12,45 +12,57 @@
 			var h2 = Raphael('beautiful-line-chart2', w, 250);
 			var h3 = Raphael('beautiful-line-chart3', w, 250);
 			var h4 = Raphael('beautiful-line-chart4', w, 250);
-			h1.drawLineChart({
+			h1.lineChart({
 				data_holder: 'd2',
-				mastercolor: '#01A8F0',
-				spewidth: w,
-				showarea: true,
-				mousecoords: 'circle'
+				width: w,
+				show_area: true,
+				mouse_coords: 'circle',
+				colors: {
+				  master: '#01A8F0'
+				}
 			});
-			h1.drawLineChart({
+			h1.lineChart({
 				data_holder: 'd1',
-				mastercolor: '#8fd100',
-				spewidth: w,
-				showarea: true,
-				mousecoords: 'circle'
+				width: w,
+				show_area: true,
+				mouse_coords: 'circle',
+				colors: {
+				  master: '#8fd100'
+				}
 			});
-			h2.drawLineChart({
+			h2.lineChart({
 				data_holder: 'd1',
-				mastercolor: '#d90000',
-				spewidth: w,
-				showarea: true,
-				mousecoords: 'circle'
+				width: w,
+				show_area: true,
+				mouse_coords: 'circle',
+				colors: {
+				  master: '#d90000'
+				}
 			});
-			h3.drawLineChart({
+			h3.lineChart({
 				data_holder: 'd2',
-				mastercolor: '#d90000',
-				spewidth: w,
-				showarea: false,
-				mousecoords: 'rect'
+				width: w,
+				show_area: false,
+				mouse_coords: 'rect',
+				colors: {
+				  master: '#d90000'
+				}
 			});
-			h4.drawLineChart({
+			h4.lineChart({
 				data_holder: 'd1',
-				mastercolor: '#cacaca',
-				spewidth: w,
-				showarea: false
+				width: w,
+				show_area: false,
+				colors: {
+				  master: '#cacaca'
+				}
 			});
-			h4.drawLineChart({
+			h4.lineChart({
 				data_holder: 'd2',
-				mastercolor: '#989898',
-				spewidth: w,
-				showarea: false
+				width: w,
+				show_area: false,
+				colors: {
+				  master: '#989898'
+				}
 			});
 		}
 
@@ -171,7 +183,7 @@
 			
 			<p>
 				<b>Step 3.</b><br />
-				Call the <a href='#drawline'>drawLineChart()</a> function to create your line chart.
+				Call the <a href='#drawline'>lineChart()</a> function to create your line chart.
 			</p>
 			
 			<pre>
@@ -180,12 +192,12 @@
 	Element.observe(window,&#39;load&#39;, function(){
 		var w = 840; // you can make this dynamic so it fits as you would like
 		var linechart = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
-		linechart.drawLineChart({ // call the drawLineChart function
+		linechart.lineChart({ // call the lineChart function
 			data_holder: &#39;d2&#39;, // find the table data source by id
 			mastercolor: &#39;#01A8F0&#39;, // set the line color
-			spewidth: w, // pass in the same width
-			showarea: true, // show the area
-			mousecoords: &#39;rect&#39; // rect (uses blanket mode) | circle (pinpoints the points)
+			width: w, // pass in the same width
+			show_area: true, // show the area
+			mouse_coords: &#39;rect&#39; // rect (uses blanket mode) | circle (pinpoints the points)
 		});
 	});
 &lt;/script&gt;
@@ -206,22 +218,24 @@
 			
 			<h2>Documentation</h2>
 		
-			<p>The drawLineChart() function will accept a list of arguments in a json style format.</p>
+			<p>The lineChart() function will accept a list of arguments in a json style format.</p>
 			
 			<pre>
 			<code class='javascript'>
 var opts = {
 	data_holder: &#39;&#39;, // id of table data holder
-	mastercolor: &#39;&#39;, // line color ex: #ff0000
-	spewidth: &#39;&#39;, // width in pixels
-	showarea: &#39;&#39;, // bool to show the area of the line
-	linecolor1: &#39;&#39;, // color of the line1 in popup
-	linecolor2: &#39;&#39;, // color of the line2 in popup
-	mousecoords: &#39;&#39;, // selection of mouseover | rect (default), circle 
-	nogrid: &#39;&#39; // bool hide grid override.. grid be drawn once for every line chart holder
+	width: &#39;&#39;, // width in pixels
+	show_area: &#39;&#39;, // bool to show the area of the line
+	mouse_coords: &#39;&#39;, // selection of mouseover | rect (default), circle 
+	no_grid: &#39;&#39;, // bool hide grid override.. grid be drawn once for every line chart holder
+	colors: {
+  	master: &#39;&#39;, // line color ex: #ff0000
+  	line1: &#39;&#39;, // color of the line1 in popup
+  	line2: &#39;&#39;, // color of the line2 in popup
+	}
 }
 
-r.drawLineChart(opts); // draw the line chart in an initiated Raphael object
+r.lineChart(opts); // draw the line chart in an initiated Raphael object
 			</code>
 			</pre>
 		</div>
