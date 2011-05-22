@@ -98,7 +98,7 @@ Future versions will allow more flexible ways of passing data, either by differe
 
 ### Documentation ###
 
-The lineChart() plugin will accept a list of arguments in a json style format.
+The ```lineChart``` plugin will accept a list of arguments in a json style format.
 
 ```javascript
 var opts = {
