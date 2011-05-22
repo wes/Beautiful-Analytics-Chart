@@ -13,47 +13,41 @@
 			var h2 = Raphael('beautiful-line-chart2', w, 250);
 			var h3 = Raphael('beautiful-line-chart3', w, 250);
 			var h4 = Raphael('beautiful-line-chart4', w, 250);
-			drawLine({
-				holder: h1,
+			h1.drawLineChart({
 				data_holder: 'd2',
 				mastercolor: '#01A8F0',
 				spewidth: w,
 				showarea: true,
 				mousecoords: 'circle'
 			});
-			drawLine({
-				holder: h1,
+			h1.drawLineChart({
 				data_holder: 'd1',
 				mastercolor: '#8fd100',
 				spewidth: w,
 				showarea: true,
 				mousecoords: 'circle'
 			});
-			drawLine({
-				holder: h2,
+			h2.drawLineChart({
 				data_holder: 'd1',
 				mastercolor: '#d90000',
 				spewidth: w,
 				showarea: true,
 				mousecoords: 'circle'
 			});
-			drawLine({
-				holder: h3,
+			h3.drawLineChart({
 				data_holder: 'd2',
 				mastercolor: '#d90000',
 				spewidth: w,
 				showarea: false,
 				mousecoords: 'rect'
 			});
-			drawLine({
-				holder: h4,
+			h4.drawLineChart({
 				data_holder: 'd1',
 				mastercolor: '#cacaca',
 				spewidth: w,
 				showarea: false
 			});
-			drawLine({
-				holder: h4,
+			h4.drawLineChart({
 				data_holder: 'd2',
 				mastercolor: '#989898',
 				spewidth: w,
@@ -178,7 +172,7 @@
 			
 			<p>
 				<b>Step 3.</b><br />
-				Call the <a href='#drawline'>drawLine()</a> function to create your line chart.
+				Call the <a href='#drawline'>drawLineChart()</a> function to create your line chart.
 			</p>
 			
 			<pre>
@@ -187,8 +181,7 @@
 	Element.observe(window,&#39;load&#39;, function(){
 		var w = 840; // you can make this dynamic so it fits as you would like
 		var linechart = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
-		drawLine({ // call the drawLine function
-			holder: linechart, // pass through the raphael obj
+		linechart.drawLineChart({ // call the drawLineChart function
 			data_holder: &#39;d2&#39;, // find the table data source by id
 			mastercolor: &#39;#01A8F0&#39;, // set the line color
 			spewidth: w, // pass in the same width
@@ -214,12 +207,11 @@
 			
 			<h2>Documentation</h2>
 		
-			<p>The drawLine() function will accept a list of arguments in a json style format.</p>
+			<p>The drawLineChart() function will accept a list of arguments in a json style format.</p>
 			
 			<pre>
 			<code class='javascript'>
 var opts = {
-	holder: &#39;&#39;, // id of div holder
 	data_holder: &#39;&#39;, // id of table data holder
 	mastercolor: &#39;&#39;, // line color ex: #ff0000
 	spewidth: &#39;&#39;, // width in pixels
@@ -230,7 +222,7 @@ var opts = {
 	nogrid: &#39;&#39; // bool hide grid override.. grid be drawn once for every line chart holder
 }
 
-drawLine(opts); // draw the line chart
+r.drawLineChart(opts); // draw the line chart in an initiated Raphael object
 			</code>
 			</pre>
 		</div>

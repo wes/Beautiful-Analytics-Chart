@@ -15,10 +15,8 @@ Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	});
 };
 
-function drawLine(conf) {
-
-	var holder = !conf.holder ? '': conf.holder,
-		data_holder = !conf.data_holder ? '': conf.data_holder,
+Raphael.fn.drawLineChart = function(conf) {
+	var data_holder = !conf.data_holder ? '': conf.data_holder,
 		mastercolor = !conf.mastercolor ? '#01A8F0': conf.mastercolor,
 		spewidth = !conf.spewidth ? 500: conf.spewidth,
 		showarea = !conf.showarea ? false: conf.showarea,
@@ -77,7 +75,7 @@ function drawLine(conf) {
 		topgutter = 20,
 		colorhue = 0.6 || Math.random(),
 		color = mastercolor,
-		r = holder,
+		r = this,
 		txt = {
 			font: '10px Helvetica, Arial',
 			fill: "#000000"
@@ -192,7 +190,7 @@ function drawLine(conf) {
 		x, y;
 		
 	for (var i = 0, ii = labels.length; i < ii; i++) {
-		var t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false: r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
+		var t = gridHasBeenDrawn[r] === false ? labels.length > 120 ? i % 2 === 0 ? false: r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
 		y = Math.round(height - bottomgutter - Y * data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
@@ -234,7 +232,7 @@ function drawLine(conf) {
 		var rect = blanket[blanket.length - 1];
 		bindHoverEvent(x, y, data[i], datatotal[i], labels[i], lines1[i], lines2[i], dot);
 	}
-	gridHasBeenDrawn[holder] = true;
+	gridHasBeenDrawn[r] = true;
 	p = p.concat([x, y, x, y]);
 	bgpp = bgpp.concat([x, y, x, y, "L", x, height - bottomgutter, "z"]);
 	path.attr({
@@ -247,8 +245,8 @@ function drawLine(conf) {
 	label[0].toFront();
 	label[1].toFront();
 	blanket.toFront();
-}
- (function() {
+};
+(function() {
 	var tokenRegex = /\{([^\}]+)\}/g,
 	objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
 	replacer = function(all, key, obj) {
