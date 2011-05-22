@@ -2,8 +2,8 @@ var gridHasBeenDrawn = false;
 Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	color = color || "#cacaca";
 	var path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5, "L", Math.round(x + w) + 0.5, Math.round(y) + 0.5, Math.round(x + w) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y) + 0.5],
-		rowHeight = h / hv,
-		columnWidth = w / wv;
+	rowHeight = h / hv,
+	columnWidth = w / wv;
 	for (var i = 1; i < hv; i++) {
 		path = path.concat(["M", Math.round(x) + 0.5, Math.round(y + i * rowHeight) + 0.5, "H", Math.round(x + w) + 0.5]);
 	}
@@ -16,19 +16,22 @@ Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 };
 
 function drawLine(conf) {
-	
+
 	var getAnchors = function(p1x, p1y, p2x, p2y, p3x, p3y) {
 		var l1 = (p2x - p1x) / 2,
 			l2 = (p3x - p2x) / 2,
 			a = Math.atan((p2x - p1x) / Math.abs(p2y - p1y)),
-			b = Math.atan((p3x - p2x) / Math.abs(p2y - p3y));
-		a = p1y < p2y ? Math.PI - a : a;
-		b = p3y < p2y ? Math.PI - b : b;
-		var alpha = Math.PI / 2 - ((a + b) % (Math.PI * 2)) / 2,
-			dx1 = l1 * Math.sin(alpha + a),
-			dy1 = l1 * Math.cos(alpha + a),
-			dx2 = l2 * Math.sin(alpha + b),
-			dy2 = l2 * Math.cos(alpha + b);
+			b = Math.atan((p3x - p2x) / Math.abs(p2y - p3y)),
+			alpha, dx1, dy1, dx2, dy2;
+		
+		a = p1y < p2y ? Math.PI - a: a;
+		b = p3y < p2y ? Math.PI - b: b;
+		alpha = Math.PI / 2 - ((a + b) % (Math.PI * 2)) / 2;
+		dx1 = l1 * Math.sin(alpha + a);
+		dy1 = l1 * Math.cos(alpha + a);
+		dx2 = l2 * Math.sin(alpha + b);
+		dy2 = l2 * Math.cos(alpha + b);
+		
 		return {
 			x1: p2x - dx1,
 			y1: p2y + dy1,
@@ -36,21 +39,22 @@ function drawLine(conf) {
 			y2: p2y + dy2
 		};
 	};
-	
-	var holder = !conf.holder ? '' : conf.holder,
-	data_holder = !conf.data_holder ? '' : conf.data_holder,
-	mastercolor = !conf.mastercolor ? '#01A8F0' : conf.mastercolor,
-	spewidth = !conf.spewidth ? 500 : conf.spewidth,
-	showarea = !conf.showarea ? false : conf.showarea,
-	linecolor1 = !conf.linecolor1 ? '#000000' : conf.linecolor1,
-	linecolor2 = !conf.linecolor2 ? conf.mastercolor : conf.linecolor2,
-	mousecoords = !conf.mousecoords ? 'rect' : conf.mousecoords,
-	nogrid = !conf.nogrid ? false : conf.nogrid;
-	var labels = [],
+
+	var holder = !conf.holder ? '': conf.holder,
+		data_holder = !conf.data_holder ? '': conf.data_holder,
+		mastercolor = !conf.mastercolor ? '#01A8F0': conf.mastercolor,
+		spewidth = !conf.spewidth ? 500: conf.spewidth,
+		showarea = !conf.showarea ? false: conf.showarea,
+		linecolor1 = !conf.linecolor1 ? '#000000': conf.linecolor1,
+		linecolor2 = !conf.linecolor2 ? conf.mastercolor: conf.linecolor2,
+		mousecoords = !conf.mousecoords ? 'rect': conf.mousecoords,
+		nogrid = !conf.nogrid ? false: conf.nogrid,
+		labels = [],
 		data = [],
 		datatotal = [],
 		lines1 = [],
 		lines2 = [];
+		
 	if (!$(data_holder)) {
 		return false;
 	}
@@ -66,6 +70,7 @@ function drawLine(conf) {
 	$$("#" + data_holder + " tbody.line2 td").each(function(s) {
 		lines2.push(s.innerHTML);
 	});
+	
 	var width = spewidth,
 		height = 250,
 		leftgutter = 0,
@@ -75,17 +80,17 @@ function drawLine(conf) {
 		color = mastercolor,
 		r = holder,
 		txt = {
-		font: '10px Helvetica, Arial',
-		fill: "#000000"
-	},
+			font: '10px Helvetica, Arial',
+			fill: "#000000"
+		},
 		txt1 = {
-		font: 'bold 11px Helvetica, Arial',
-		fill: "#000000"
-	},
+			font: 'bold 11px Helvetica, Arial',
+			fill: "#000000"
+		},
 		txt2 = {
-		font: 'bold 10px Helvetica, Arial',
-		fill: "#000000"
-	},
+			font: 'bold 10px Helvetica, Arial',
+			fill: "#000000"
+		},
 		X = (width - leftgutter) / labels.length,
 		max = Math.max.apply(Math, data),
 		Y = (height - bottomgutter - topgutter) / max;
@@ -94,98 +99,101 @@ function drawLine(conf) {
 	}
 	r.gridDrawn = true;
 	var path = r.path().attr({
-		stroke: color,
-		"stroke-width": 4,
-		"stroke-linejoin": "round"
-	}),
+			stroke: color,
+			"stroke-width": 4,
+			"stroke-linejoin": "round"
+		}),
 		bgp = showarea === true ? r.path().attr({
-		stroke: "none",
-		opacity: 0.3,
-		fill: color
-	}) : r.path().attr({
-		stroke: "none",
-		opacity: 0,
-		fill: color
-	}).hide(),
-	label = r.set(),
-	is_label_visible = false,
-	leave_timer,
-	blanket = r.set();
+			stroke: "none",
+			opacity: 0.3,
+			fill: color
+		}) : r.path().attr({
+			stroke: "none",
+			opacity: 0,
+			fill: color
+		}).hide(),
+		label = r.set(),
+		is_label_visible = false,
+		leave_timer,
+		blanket = r.set();
 	label.push(r.text(60, 12, "24 hits").attr(txt1));
 	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
 		fill: color
 	}));
 	label.hide();
-	var frame = r.popup(100, 100, label, "right").attr({
-		fill: "#ffffff",
-		stroke: "#666",
-		"stroke-width": 2,
-		"fill-opacity": 0.8
-	}).hide();
-	var p, bgpp;
-	var bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot) {
-		var timer, i = 0;
-		rect.hover(function() {
-			clearTimeout(leave_timer);
-			var side = "right";
-			if (x + frame.getBBox().width > width) {
-				side = "left";
-			}
-			var ppp = r.popup(x, y, label, side, 1);
-			if (mousecoords == 'circle') {
-				frame.attr({
-					path: ppp.path,
-					width: '200px'
-				}).show();
-				label[0].attr({
-					text: line1,
-					fill: linecolor1,
-					translation: [ppp.dx, ppp.dy]
-				}).show();
-				label[1].attr({
-					text: line2,
-					fill: linecolor2,
-					translation: [ppp.dx, ppp.dy]
-				}).show();
-			} else if (mousecoords == 'rect') {
-				frame.show().stop().animate({
-					path: ppp.path
-				},
-				200 * is_label_visible);
-				label[0].attr({
-					text: line1
-				}).show().stop().animateWith(frame, {
-					translation: [ppp.dx, ppp.dy]
-				},
-				200 * is_label_visible);
-				label[1].attr({
-					text: line2
-				}).show().stop().animateWith(frame, {
-					translation: [ppp.dx, ppp.dy]
-				},
-				200 * is_label_visible);
-			}
-			frame.toFront();
-			label[0].toFront();
-			label[1].toFront();
-			this.toFront();
-			dot.attr("r", 6);
-			is_label_visible = true;
-		},
-		function() {
-			dot.attr("r", 4);
-			leave_timer = setTimeout(function() {
-				frame.hide();
-				label[0].hide();
-				label[1].hide();
-				is_label_visible = false;
+	var	 frame = r.popup(100, 100, label, "right").attr({
+			fill: "#ffffff",
+			stroke: "#666",
+			"stroke-width": 2,
+			"fill-opacity": 0.8
+		}).hide(),
+		p,
+		bgpp,
+		bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot) {
+			var timer,
+			i = 0;
+			rect.hover(function() {
+				clearTimeout(leave_timer);
+				var side = "right";
+				if (x + frame.getBBox().width > width) {
+					side = "left";
+				}
+				var ppp = r.popup(x, y, label, side, 1);
+				if (mousecoords == 'circle') {
+					frame.attr({
+						path: ppp.path,
+						width: '200px'
+					}).show();
+					label[0].attr({
+						text: line1,
+						fill: linecolor1,
+						translation: [ppp.dx, ppp.dy]
+					}).show();
+					label[1].attr({
+						text: line2,
+						fill: linecolor2,
+						translation: [ppp.dx, ppp.dy]
+					}).show();
+				} else if (mousecoords == 'rect') {
+					frame.show().stop().animate({
+						path: ppp.path
+					},
+					200 * is_label_visible);
+					label[0].attr({
+						text: line1
+					}).show().stop().animateWith(frame, {
+						translation: [ppp.dx, ppp.dy]
+					},
+					200 * is_label_visible);
+					label[1].attr({
+						text: line2
+					}).show().stop().animateWith(frame, {
+						translation: [ppp.dx, ppp.dy]
+					},
+					200 * is_label_visible);
+				}
+				frame.toFront();
+				label[0].toFront();
+				label[1].toFront();
+				this.toFront();
+				dot.attr("r", 6);
+				is_label_visible = true;
 			},
-			1);
-		});
-	};
-	var x, y;
+			function() {
+				dot.attr("r", 4);
+				leave_timer = setTimeout(function() {
+					frame.hide();
+					label[0].hide();
+					label[1].hide();
+					is_label_visible = false;
+				},
+				1);
+			});
+		},
+		x, y;
+		
 	for (var i = 0, ii = labels.length; i < ii; i++) {
-		var t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
+		var t = gridHasBeenDrawn[holder] === false ? labels.length > 120 ? i % 2 === 0 ? false: r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : r.text(x, height - 25, labels[i]).attr(txt).rotate(70).toBack() : false;
 		y = Math.round(height - bottomgutter - Y * data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
@@ -194,9 +202,9 @@ function drawLine(conf) {
 		}
 		if (i && i < ii - 1) {
 			var Y0 = Math.round(height - bottomgutter - Y * data[i - 1]),
-				X0 = Math.round(leftgutter + X * (i - 0.5)),
-				Y2 = Math.round(height - bottomgutter - Y * data[i + 1]),
-				X2 = Math.round(leftgutter + X * (i + 1.5));
+			X0 = Math.round(leftgutter + X * (i - 0.5)),
+			Y2 = Math.round(height - bottomgutter - Y * data[i + 1]),
+			X2 = Math.round(leftgutter + X * (i + 1.5));
 			var a = getAnchors(X0, Y0, x, y, X2, Y2);
 			p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 			bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
@@ -241,12 +249,13 @@ function drawLine(conf) {
 	label[1].toFront();
 	blanket.toFront();
 }
-(function() {
+ (function() {
 	var tokenRegex = /\{([^\}]+)\}/g,
-		objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
-		replacer = function(all, key, obj) {
+	objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
+	replacer = function(all, key, obj) {
 		var res = obj;
-		key.replace(objNotationRegex, function(all, name, quote, quotedName, isFunc) {
+		key.replace(objNotationRegex,
+		function(all, name, quote, quotedName, isFunc) {
 			name = name || quotedName;
 			if (res) {
 				if (name in res) {
@@ -255,11 +264,12 @@ function drawLine(conf) {
 				return (typeof res == "function") && isFunc && (res = res());
 			}
 		});
-		res = (res === null || res == obj ? all : res) + "";
+		res = (res === null || res == obj ? all: res) + "";
 		return res;
 	},
-		fill = function(str, obj) {
-		return String(str).replace(tokenRegex, function(all, key) {
+	fill = function(str, obj) {
+		return String(str).replace(tokenRegex,
+		function(all, key) {
 			return replacer(all, key, obj);
 		});
 	};
@@ -274,80 +284,81 @@ function drawLine(conf) {
 			y = Math.round(bb.y) - r,
 			gap = Math.min(h / 2, w / 2, 10),
 			shapes = {
-			top: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}l-{right},0-{gap},{gap}-{gap}-{gap}-{left},0a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
-			bottom: "M{x},{y}l{left},0,{gap}-{gap},{gap},{gap},{right},0a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
-			right: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}l0-{bottom}-{gap}-{gap},{gap}-{gap},0-{top}a{r},{r},0,0,1,{r}-{r}z",
-			left: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}l0,{top},{gap},{gap}-{gap},{gap},0,{bottom}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z"
-		},
+				top: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}l-{right},0-{gap},{gap}-{gap}-{gap}-{left},0a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
+				bottom: "M{x},{y}l{left},0,{gap}-{gap},{gap},{gap},{right},0a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
+				right: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}l0-{bottom}-{gap}-{gap},{gap}-{gap},0-{top}a{r},{r},0,0,1,{r}-{r}z",
+				left: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}l0,{top},{gap},{gap}-{gap},{gap},0,{bottom}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z"
+			},
 			offset = {
-			hx0: X - (x + r + w - gap * 2),
-			hx1: X - (x + r + w / 2 - gap),
-			hx2: X - (x + r + gap),
-			vhy: Y - (y + r + h + r + gap),
-			"^hy": Y - (y - gap)
-		},
+				hx0: X - (x + r + w - gap * 2),
+				hx1: X - (x + r + w / 2 - gap),
+				hx2: X - (x + r + gap),
+				vhy: Y - (y + r + h + r + gap),
+				"^hy": Y - (y - gap)
+			},
 			mask = [{
-			x: x + r,
-			y: y,
-			w: w,
-			w4: w / 4,
-			h4: h / 4,
-			right: 0,
-			left: w - gap * 2,
-			bottom: 0,
-			top: h - gap * 2,
-			r: r,
-			h: h,
-			gap: gap
-		},
-		{
-			x: x + r,
-			y: y,
-			w: w,
-			w4: w / 4,
-			h4: h / 4,
-			left: w / 2 - gap,
-			right: w / 2 - gap,
-			top: h / 2 - gap,
-			bottom: h / 2 - gap,
-			r: r,
-			h: h,
-			gap: gap
-		},
-		{
-			x: x + r,
-			y: y,
-			w: w,
-			w4: w / 4,
-			h4: h / 4,
-			left: 0,
-			right: w - gap * 2,
-			top: 0,
-			bottom: h - gap * 2,
-			r: r,
-			h: h,
-			gap: gap
-		}][pos[1] == "middle" ? 1 : (pos[1] == "top" || pos[1] == "left") * 2];
-		var dx = 0,
+				x: x + r,
+				y: y,
+				w: w,
+				w4: w / 4,
+				h4: h / 4,
+				right: 0,
+				left: w - gap * 2,
+				bottom: 0,
+				top: h - gap * 2,
+				r: r,
+				h: h,
+				gap: gap
+			},
+			{
+				x: x + r,
+				y: y,
+				w: w,
+				w4: w / 4,
+				h4: h / 4,
+				left: w / 2 - gap,
+				right: w / 2 - gap,
+				top: h / 2 - gap,
+				bottom: h / 2 - gap,
+				r: r,
+				h: h,
+				gap: gap
+			},
+			{
+				x: x + r,
+				y: y,
+				w: w,
+				w4: w / 4,
+				h4: h / 4,
+				left: 0,
+				right: w - gap * 2,
+				top: 0,
+				bottom: h - gap * 2,
+				r: r,
+				h: h,
+				gap: gap
+			}][pos[1] == "middle" ? 1: (pos[1] == "top" || pos[1] == "left") * 2],
+			dx = 0,
 			dy = 0,
 			out = this.path(fill(shapes[pos[0]], mask)).insertBefore(set);
+			
 		switch (pos[0]) {
-		case "top":
-			dx = X - (x + r + mask.left + gap);
-			dy = Y - (y + r + h + r + gap);
-			break;
-		case "bottom":
-			dx = X - (x + r + mask.left + gap);
-			dy = Y - (y - gap);
-			break;
-		case "left":
-			dx = X - (x + r + w + r + gap);
-			dy = Y - (y + r + mask.top + gap);
-			break;
-		case "right":
-			dx = X - (x - gap);
-			dy = Y - (y + r + mask.top + gap);
-			break;
+			case "top":
+				dx = X - (x + r + mask.left + gap);
+				dy = Y - (y + r + h + r + gap);
+				break;
+			case "bottom":
+				dx = X - (x + r + mask.left + gap);
+				dy = Y - (y - gap);
+				break;
+			case "left":
+				dx = X - (x + r + w + r + gap);
+				dy = Y - (y + r + mask.top + gap);
+				break;
+			case "right":
+				dx = X - (x - gap);
+				dy = Y - (y + r + mask.top + gap);
+				break;
 		}
 		out.translate(dx, dy);
 		if (ret) {
