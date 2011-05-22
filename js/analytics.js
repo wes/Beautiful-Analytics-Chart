@@ -1,3 +1,5 @@
+(function() {
+	
 Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	color = color || "#cacaca";
 	var path = ["M", Math.round(x) + 0.5, Math.round(y) + 0.5, "L", Math.round(x + w) + 0.5, Math.round(y) + 0.5, Math.round(x + w) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y + h) + 0.5, Math.round(x) + 0.5, Math.round(y) + 0.5],
@@ -12,6 +14,133 @@ Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
 	return this.path(path.join(",")).attr({
 		stroke: color
 	});
+};
+
+Raphael.fn.popup = function(X, Y, set, position, ret) {
+	var pos = String(position || "top-middle").split("-"),
+		pos_x = pos[1] || "middle",
+		tokenRegex = /\{([^\}]+)\}/g,
+		objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
+		
+		replacer = function(all, key, obj) {
+			var res = obj;
+			key.replace(objNotationRegex,
+			function(all, name, quote, quotedName, isFunc) {
+				name = name || quotedName;
+				if (res) {
+					if (name in res) {
+						res = res[name];
+					}
+					return (typeof res == "function") && isFunc && (res = res());
+				}
+			});
+			res = (res === null || res == obj ? all: res) + "";
+			return res;
+		},
+		
+		fill = function(str, obj) {
+			return String(str).replace(tokenRegex,
+			function(all, key) {
+				return replacer(all, key, obj);
+			});
+		},
+		
+		r = 5,
+		bb = set.getBBox(),
+		w = Math.round(bb.width),
+		h = Math.round(bb.height),
+		x = Math.round(bb.x) - r,
+		y = Math.round(bb.y) - r,
+		gap = Math.min(h / 2, w / 2, 10),
+		shapes = {
+			top: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}l-{right},0-{gap},{gap}-{gap}-{gap}-{left},0a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
+			bottom: "M{x},{y}l{left},0,{gap}-{gap},{gap},{gap},{right},0a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
+			right: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}l0-{bottom}-{gap}-{gap},{gap}-{gap},0-{top}a{r},{r},0,0,1,{r}-{r}z",
+			left: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}l0,{top},{gap},{gap}-{gap},{gap},0,{bottom}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z"
+		},
+		offset = {
+			hx0: X - (x + r + w - gap * 2),
+			hx1: X - (x + r + w / 2 - gap),
+			hx2: X - (x + r + gap),
+			vhy: Y - (y + r + h + r + gap),
+			"^hy": Y - (y - gap)
+		},
+		mask = [{
+			x: x + r,
+			y: y,
+			w: w,
+			w4: w / 4,
+			h4: h / 4,
+			right: 0,
+			left: w - gap * 2,
+			bottom: 0,
+			top: h - gap * 2,
+			r: r,
+			h: h,
+			gap: gap
+		},
+		{
+			x: x + r,
+			y: y,
+			w: w,
+			w4: w / 4,
+			h4: h / 4,
+			left: w / 2 - gap,
+			right: w / 2 - gap,
+			top: h / 2 - gap,
+			bottom: h / 2 - gap,
+			r: r,
+			h: h,
+			gap: gap
+		},
+		{
+			x: x + r,
+			y: y,
+			w: w,
+			w4: w / 4,
+			h4: h / 4,
+			left: 0,
+			right: w - gap * 2,
+			top: 0,
+			bottom: h - gap * 2,
+			r: r,
+			h: h,
+			gap: gap
+		}][pos_x == "middle" ? 1: (pos_x == "top" || pos_x == "left") * 2],
+		dx = 0,
+		dy = 0,
+		out = this.path(fill(shapes[pos[0]], mask)).insertBefore(set);
+		
+	switch (pos[0]) {
+		case "top":
+			dx = X - (x + r + mask.left + gap);
+			dy = Y - (y + r + h + r + gap);
+			break;
+		case "bottom":
+			dx = X - (x + r + mask.left + gap);
+			dy = Y - (y - gap);
+			break;
+		case "left":
+			dx = X - (x + r + w + r + gap);
+			dy = Y - (y + r + mask.top + gap);
+			break;
+		case "right":
+			dx = X - (x - gap);
+			dy = Y - (y + r + mask.top + gap);
+			break;
+	}
+	out.translate(dx, dy);
+	if (ret) {
+		ret = out.attr("path");
+		out.remove();
+		return {
+			path: ret,
+			dx: dx,
+			dy: dy
+		};
+	}
+	set.translate(dx, dy);
+	return out;
 };
 
 Raphael.fn.drawLineChart = function(conf) {
@@ -79,9 +208,9 @@ Raphael.fn.drawLineChart = function(conf) {
 			} else {
 				return false;
 			}
-		};
+		},
 		
-	var table = loadTableData(data_holder),
+		table = loadTableData(data_holder),
 		width = spewidth,
 		height = 250,
 		leftgutter = 0,
@@ -104,12 +233,8 @@ Raphael.fn.drawLineChart = function(conf) {
 		},
 		X = (width - leftgutter) / table.labels.length,
 		max = Math.max.apply(Math, table.data),
-		Y = (height - bottomgutter - topgutter) / max;
-	if (!r.gridDrawn && nogrid === false) {
-		r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
-	}
-	r.gridDrawn = true;
-	var path = r.path().attr({
+		Y = (height - bottomgutter - topgutter) / max,
+		path = r.path().attr({
 			stroke: color,
 			"stroke-width": 4,
 			"stroke-linejoin": "round"
@@ -126,20 +251,8 @@ Raphael.fn.drawLineChart = function(conf) {
 		label = r.set(),
 		is_label_visible = false,
 		leave_timer,
-		blanket = r.set();
-	label.push(r.text(60, 12, "24 hits").attr(txt1));
-	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
-		fill: color
-	}));
-	label.hide();
-	var	 frame = r.popup(100, 100, label, "right").attr({
-			fill: "#ffffff",
-			stroke: "#666",
-			"stroke-width": 2,
-			"fill-opacity": 0.8
-		}).hide(),
-		p,
-		bgpp,
+		blanket = r.set(),
+		
 		bindHoverEvent = function(x, y, data, datatotal, lbl, line1, line2, dot) {
 			var timer,
 			i = 0;
@@ -201,9 +314,33 @@ Raphael.fn.drawLineChart = function(conf) {
 				1);
 			});
 		},
-		x, y;
+		frame,
+		p,
+		bgpp,
+		x,
+		y;
+	
+	if (!r.gridDrawn && nogrid === false) {
+		r.drawGrid(leftgutter + X * 0.5 + 0.5, topgutter + 0.5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
+	}
+	r.gridDrawn = true;
+	
+	label.push(r.text(60, 12, "24 hits").attr(txt1));
+	label.push(r.text(60, 27, "22 September 2008").attr(txt2).attr({
+		fill: color
+	}));
+	label.hide();
+	
+	frame = r.popup(100, 100, label, "right").attr({
+		fill: "#ffffff",
+		stroke: "#666",
+		"stroke-width": 2,
+		"fill-opacity": 0.8
+	}).hide();
 		
 	for (var i = 0, ii = table.labels.length; i < ii; i++) {
+		var dot, rect;
+		
 		y = Math.round(height - bottomgutter - Y * table.data[i]);
 		x = Math.round(leftgutter + X * (i + 0.5));
 		if (!i) {
@@ -219,7 +356,8 @@ Raphael.fn.drawLineChart = function(conf) {
 			p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 			bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 		}
-		var dot = r.circle(x, y, 4).attr({
+		
+		dot = r.circle(x, y, 4).attr({
 			fill: "#ffffff",
 			stroke: color,
 			"stroke-width": 2
@@ -242,9 +380,10 @@ Raphael.fn.drawLineChart = function(conf) {
 				opacity: 0
 			}));
 		}
-		var rect = blanket[blanket.length - 1];
+		rect = blanket[blanket.length - 1];
 		bindHoverEvent(x, y, table.data[i], datatotal[i], table.labels[i], table.lines1[i], table.lines2[i], dot);
 	}
+	
 	p = p.concat([x, y, x, y]);
 	bgpp = bgpp.concat([x, y, x, y, "L", x, height - bottomgutter, "z"]);
 	path.attr({
@@ -258,128 +397,5 @@ Raphael.fn.drawLineChart = function(conf) {
 	label[1].toFront();
 	blanket.toFront();
 };
-(function() {
-	var tokenRegex = /\{([^\}]+)\}/g,
-	objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g,
-	replacer = function(all, key, obj) {
-		var res = obj;
-		key.replace(objNotationRegex,
-		function(all, name, quote, quotedName, isFunc) {
-			name = name || quotedName;
-			if (res) {
-				if (name in res) {
-					res = res[name];
-				}
-				return (typeof res == "function") && isFunc && (res = res());
-			}
-		});
-		res = (res === null || res == obj ? all: res) + "";
-		return res;
-	},
-	fill = function(str, obj) {
-		return String(str).replace(tokenRegex,
-		function(all, key) {
-			return replacer(all, key, obj);
-		});
-	};
-	Raphael.fn.popup = function(X, Y, set, pos, ret) {
-		pos = String(pos || "top-middle").split("-");
-		pos[1] = pos[1] || "middle";
-		var r = 5,
-			bb = set.getBBox(),
-			w = Math.round(bb.width),
-			h = Math.round(bb.height),
-			x = Math.round(bb.x) - r,
-			y = Math.round(bb.y) - r,
-			gap = Math.min(h / 2, w / 2, 10),
-			shapes = {
-				top: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}l-{right},0-{gap},{gap}-{gap}-{gap}-{left},0a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
-				bottom: "M{x},{y}l{left},0,{gap}-{gap},{gap},{gap},{right},0a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z",
-				right: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}v{h4},{h4},{h4},{h4}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}l0-{bottom}-{gap}-{gap},{gap}-{gap},0-{top}a{r},{r},0,0,1,{r}-{r}z",
-				left: "M{x},{y}h{w4},{w4},{w4},{w4}a{r},{r},0,0,1,{r},{r}l0,{top},{gap},{gap}-{gap},{gap},0,{bottom}a{r},{r},0,0,1,-{r},{r}h-{w4}-{w4}-{w4}-{w4}a{r},{r},0,0,1-{r}-{r}v-{h4}-{h4}-{h4}-{h4}a{r},{r},0,0,1,{r}-{r}z"
-			},
-			offset = {
-				hx0: X - (x + r + w - gap * 2),
-				hx1: X - (x + r + w / 2 - gap),
-				hx2: X - (x + r + gap),
-				vhy: Y - (y + r + h + r + gap),
-				"^hy": Y - (y - gap)
-			},
-			mask = [{
-				x: x + r,
-				y: y,
-				w: w,
-				w4: w / 4,
-				h4: h / 4,
-				right: 0,
-				left: w - gap * 2,
-				bottom: 0,
-				top: h - gap * 2,
-				r: r,
-				h: h,
-				gap: gap
-			},
-			{
-				x: x + r,
-				y: y,
-				w: w,
-				w4: w / 4,
-				h4: h / 4,
-				left: w / 2 - gap,
-				right: w / 2 - gap,
-				top: h / 2 - gap,
-				bottom: h / 2 - gap,
-				r: r,
-				h: h,
-				gap: gap
-			},
-			{
-				x: x + r,
-				y: y,
-				w: w,
-				w4: w / 4,
-				h4: h / 4,
-				left: 0,
-				right: w - gap * 2,
-				top: 0,
-				bottom: h - gap * 2,
-				r: r,
-				h: h,
-				gap: gap
-			}][pos[1] == "middle" ? 1: (pos[1] == "top" || pos[1] == "left") * 2],
-			dx = 0,
-			dy = 0,
-			out = this.path(fill(shapes[pos[0]], mask)).insertBefore(set);
-			
-		switch (pos[0]) {
-			case "top":
-				dx = X - (x + r + mask.left + gap);
-				dy = Y - (y + r + h + r + gap);
-				break;
-			case "bottom":
-				dx = X - (x + r + mask.left + gap);
-				dy = Y - (y - gap);
-				break;
-			case "left":
-				dx = X - (x + r + w + r + gap);
-				dy = Y - (y + r + mask.top + gap);
-				break;
-			case "right":
-				dx = X - (x - gap);
-				dy = Y - (y + r + mask.top + gap);
-				break;
-		}
-		out.translate(dx, dy);
-		if (ret) {
-			ret = out.attr("path");
-			out.remove();
-			return {
-				path: ret,
-				dx: dx,
-				dy: dy
-			};
-		}
-		set.translate(dx, dy);
-		return out;
-	};
+
 })();
