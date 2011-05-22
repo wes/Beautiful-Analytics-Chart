@@ -2,12 +2,11 @@
 <head>
 	<title>Beautiful Analytics Chart</title>
 	<link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" title="Demo Stylesheet" charset="utf-8">
-	<script type='text/javascript' src='js/lib/prototype.js'></script>
 	<script type='text/javascript' src='js/lib/raphael.js'></script>
 	<script type='text/javascript' src='js/lib/highlight.js'></script>
 	<script type='text/javascript' src='js/analytics.js'></script>
 	<script type='text/javascript'>
-		Element.observe(window,'load', function(){
+	  function loadCharts() {
 			var w = 840;
 			var h1 = Raphael('beautiful-line-chart1', w, 250);
 			var h2 = Raphael('beautiful-line-chart2', w, 250);
@@ -53,7 +52,7 @@
 				spewidth: w,
 				showarea: false
 			});
-		});
+		}
 
 		// Just used in the code highlighter
 		hljs.tabReplace = '   ';
@@ -61,7 +60,7 @@
 
 	</script>
 </head>
-<body>
+<body onload="loadCharts()">
 	
 	<div id='main'>
 	
@@ -87,7 +86,9 @@
 
 			<h2>About</h2>
 			
-			<p class='s1'>This is derived from a <a href='http://raphaeljs.com/analytics.html'>raphael example</a>, rewritten to use prototype and support a few more configurations.	 My overall goal with this line chart was to create a simple and easy to use library that can create great looking line charts.	 After seeing raphael's example, I knew this was the perfect place to start.</p>
+			<p class='s1'>This is derived from a <a href='http://raphaeljs.com/analytics.html'>raphael example</a>, rewritten to be more configurable.
+			  My overall goal with this line chart was to create a simple and easy to use library that can create great looking line charts.	 After seeing raphael's example, I knew this was the perfect place to start.
+			</p>
 
 			<hr />
 			
@@ -95,7 +96,6 @@
 		
 			<p>
 				<ul>
-					<li>Prototype JS - <a href='http://prototypejs.org'>http://prototypejs.org</a></li>
 					<li>Raphael - <a href='http://raphaeljs.com'>http://raphaeljs.com</a></li>
 				</ul>
 			</p>
@@ -114,12 +114,11 @@
 			
 			<p>
 				<b>Step 1.</b><br />
-				You must first include prototype, raphael and the <a href='js/analytics.js'>analytics</a> library.
+				You must first include raphael and the <a href='js/analytics.js'>analytics</a> library.
 			</p>
 			
 			<pre>
 				<code class='html'>
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/prototype.js&#39;&gt;&lt;/script&gt;
 &lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/raphael.js&#39;&gt;&lt;/script&gt;
 &lt;script type=&#39;text/javascript&#39; src=&#39;js/analytics.js&#39;&gt;&lt;/script&gt;
 				</code>

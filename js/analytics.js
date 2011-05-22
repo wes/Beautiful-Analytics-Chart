@@ -51,22 +51,27 @@ Raphael.fn.drawLineChart = function(conf) {
 				y2: p2y + dy2
 			};
 		};
-		
-	if (!$(data_holder)) {
+	
+	var data_table = document.getElementById(data_holder);
+	if (!data_table) {
 		return false;
 	}
-	$$("#" + data_holder + " tfoot th").each(function(s) {
-		labels.push(s.innerHTML);
-	});
-	$$("#" + data_holder + " tbody.data td").each(function(s) {
-		data.push(s.innerHTML);
-	});
-	$$("#" + data_holder + " tbody.line1 td").each(function(s) {
-		lines1.push(s.innerHTML);
-	});
-	$$("#" + data_holder + " tbody.line2 td").each(function(s) {
-		lines2.push(s.innerHTML);
-	});
+	var ths = data_table.getElementsByTagName('tfoot')[0].getElementsByTagName('th');
+	for (var j=0; j < ths.length; j++) {
+		labels.push(ths[j].innerHTML);
+	}
+	var data_tds = data_table.getElementsByClassName('data')[0].getElementsByTagName('td');
+	for (var j=0; j < data_tds.length; j++) {
+		data.push(data_tds[j].innerHTML);
+	}
+	var line1_tds = data_table.getElementsByClassName('line1')[0].getElementsByTagName('td');
+	for (var j=0; j < line1_tds.length; j++) {
+		lines1.push(line1_tds[j].innerHTML);
+	}
+	var line2_tds = data_table.getElementsByClassName('line2')[0].getElementsByTagName('td');
+	for (var j=0; j < line2_tds.length; j++) {
+		lines2.push(line2_tds[j].innerHTML);
+	}
 	
 	var width = spewidth,
 		height = 250,
