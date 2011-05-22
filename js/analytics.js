@@ -312,12 +312,14 @@ Raphael.fn.lineChart = function(method) {
 				this.lineChart.rects.push(rect);
 				
 				this.lineChart.info.push({
+					x: x,
+					y: y,
 					data: table.data[i],
 					label: table.labels[i],
 					line1: table.lines1[i],
 					line2: table.lines2[i]
 				});
-				helpers.bindHoverEvent(this, x, y, i, dot, rect, this.lineChart.frame, this.lineChart.label);
+				helpers.bindHoverEvent(this, i, dot, rect, this.lineChart.frame, this.lineChart.label);
 			}
 
 			p = p.concat([x, y, x, y]);
@@ -377,6 +379,8 @@ Raphael.fn.lineChart = function(method) {
 				
 				// new popup data
 				this.lineChart.info[i] = {
+					x: x,
+					y: y,
 					data: table.data[i],
 					label: table.labels[i],
 					line1: table.lines1[i],
@@ -471,10 +475,12 @@ Raphael.fn.lineChart = function(method) {
 			}
 		},
 		
-		bindHoverEvent: function(elm, x, y, i, dot, rect, frame, label) {
+		bindHoverEvent: function(elm, i, dot, rect, frame, label) {
 			var f_in = function() {
 					var side = "right",
-						info = elm.lineChart.info[i];
+						info = elm.lineChart.info[i],
+						x = info.x,
+						y = info.y;
 					
 					window.clearTimeout(elm.leave_timer);
 					if (x + frame.getBBox().width > elm.lineChart.settings.width) {
