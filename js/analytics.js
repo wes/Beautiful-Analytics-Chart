@@ -182,33 +182,33 @@ Raphael.fn.lineChart = function(method) {
 				max = Math.max.apply(Math, table.data),
 				Y = (height - gutter.bottom - gutter.top) / max,
 				
-				//TODO allow customizing
-				path = element.path().attr({
-					stroke: this.lineChart.settings.colors.master,
-					"stroke-width": 4,
-					"stroke-linejoin": "round"
-				}),
 				label = element.set(),
 				is_label_visible = false,
 				blanket = element.set(),
 				frame,
 				p,
-				bgp,
 				bgpp,
 				x,
 				y;
-			
+				
+			this.lineChart.dots = [];
+			//TODO allow customizing
+			this.lineChart.path = element.path().attr({
+				stroke: this.lineChart.settings.colors.master,
+				"stroke-width": 4,
+				"stroke-linejoin": "round"
+			});			
 			// chart area
 			//TODO allow customizing
 			if (this.lineChart.settings.show_area) {
-				bgp = element.path().attr({
+				this.lineChart.bgp = element.path().attr({
 					stroke: "none",
 					opacity: 0.3,
 					fill: this.lineChart.settings.colors.master
 				});
 			}
 			else {
-				bgp = element.path().attr({
+				this.lineChart.bgp = element.path().attr({
 					stroke: "none",
 					opacity: 0,
 					fill: this.lineChart.settings.colors.master
@@ -254,7 +254,6 @@ Raphael.fn.lineChart = function(method) {
 				"fill-opacity": 0.8
 			}).hide();
 			
-			
 			for (var i = 0, ii = table.labels.length; i < ii; i++) {
 				var dot, rect;
 
@@ -274,10 +273,10 @@ Raphael.fn.lineChart = function(method) {
 				}
 				else if (i < ii - 1) {
 					var Y0 = Math.round(height - gutter.bottom - Y * table.data[i - 1]),
-					X0 = Math.round(gutter.left + X * (i - 0.5)),
-					Y2 = Math.round(height - gutter.bottom - Y * table.data[i + 1]),
-					X2 = Math.round(gutter.left + X * (i + 1.5));
-					var a = helpers.getAnchors(X0, Y0, x, y, X2, Y2);
+						X0 = Math.round(gutter.left + X * (i - 0.5)),
+						Y2 = Math.round(height - gutter.bottom - Y * table.data[i + 1]),
+						X2 = Math.round(gutter.left + X * (i + 1.5)),
+						a = helpers.getAnchors(X0, Y0, x, y, X2, Y2);
 					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 					bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
@@ -293,6 +292,9 @@ Raphael.fn.lineChart = function(method) {
 						opacity: 0
 					});
 				}
+				
+				this.lineChart.dots.push(dot);
+				
 				if (this.lineChart.settings.mouse_coords == 'circle') {
 					blanket.push(element.circle(x, y, 14).attr({
 						stroke: "none",
@@ -313,17 +315,65 @@ Raphael.fn.lineChart = function(method) {
 
 			p = p.concat([x, y, x, y]);
 			bgpp = bgpp.concat([x, y, x, y, "L", x, height - gutter.bottom, "z"]);
-			path.attr({
+			this.lineChart.path.attr({
 				path: p
 			});
-			bgp.attr({
+			this.lineChart.bgp.attr({
 				path: bgpp
 			});
 			frame.toFront();
 			label[0].toFront();
 			label[1].toFront();
 			blanket.toFront();
+		},
+		
+		setDataHolder: function(id) {
+			var width = this.lineChart.settings.width,
+				height = this.lineChart.settings.height,
+				gutter = this.lineChart.settings.gutter,
+				
+				table = helpers.loadTableData(id),
+				
+				X = (width - gutter.left) / table.labels.length,
+				max = Math.max.apply(Math, table.data),
+				Y = (height - gutter.bottom - gutter.top) / max,
+				
+				p, bgpp;
 			
+			for (var i = 0, ii = table.labels.length; i < ii; i++) {
+				var dot, rect;
+				
+				// calculate current x, y
+				y = Math.round(height - gutter.bottom - Y * table.data[i]);
+				x = Math.round(gutter.left + X * (i + 0.5));
+				
+				//??
+				if (!i) {
+					p = ["M", x, y, "C", x, y];
+					bgpp = ["M", gutter.left + X * 0.5, height - gutter.bottom, "L", x, y, "C", x, y];
+				}
+				else if (i < ii - 1) {
+					var Y0 = Math.round(height - gutter.bottom - Y * table.data[i - 1]),
+						X0 = Math.round(gutter.left + X * (i - 0.5)),
+						Y2 = Math.round(height - gutter.bottom - Y * table.data[i + 1]),
+						X2 = Math.round(gutter.left + X * (i + 1.5)),
+						a = helpers.getAnchors(X0, Y0, x, y, X2, Y2);
+					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+					bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+				}
+				
+				this.lineChart.dots[i].animate({cy: y},
+						this.lineChart.settings.animation.speed,
+						this.lineChart.settings.animation.easing);
+			}
+			p = p.concat([x, y, x, y]);
+			bgpp = bgpp.concat([x, y, x, y, "L", x, height - gutter.bottom, "z"]);
+			this.lineChart.path.animate({path: p},
+					this.lineChart.settings.animation.speed,
+					this.lineChart.settings.animation.easing);
+			this.lineChart.bgp.animate({path: bgpp},
+					this.lineChart.settings.animation.speed,
+					this.lineChart.settings.animation.easing);
 		}
 		
 	};
@@ -505,6 +555,10 @@ Raphael.fn.lineChart.defaults = {
 	no_grid: false,
 	x_labels: false, // either false or a step integer
 	y_labels: false,  // either false or a step integer
+	animation: {
+		speed: 600,
+		easing: "backOut"
+	},
 	colors: {
 		master: '#01A8F0',
 		line1: '#000000',
