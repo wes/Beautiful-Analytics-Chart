@@ -97,7 +97,7 @@ Future versions will allow more flexible ways of passing data, either by differe
 </script>
 ```
 
-### Documentation ###
+## Documentation ##
 
 The ```lineChart()``` plugin will accept a list of arguments in a json style format.
 
@@ -154,7 +154,7 @@ var opts = {
 r.lineChart(opts); // draw the line chart in an initiated Raphael object
 ```
 
-### Enjoy. ###
+## Enjoy. ##
 
 [1]: http://raphaeljs.com/
 [2]: https://github.com/wes/Beautiful-Analytics-Chart
