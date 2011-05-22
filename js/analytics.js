@@ -229,7 +229,15 @@ Raphael.fn.lineChart = function(method) {
 				grid.toBack();
 			}
 			this.lineChart.gridDrawn = true;
-
+			
+			// draw x axis labels
+			this.lineChart.XLabels = [];
+			if (this.lineChart.settings.x_labels_step) {
+				helpers.drawXLabels(element, X, height - gutter.bottom + 18,
+						this.lineChart.settings.x_labels_step, table.labels,
+						this.lineChart.settings.text.axis_labels);
+			}
+			
 			// draw y axis labels
 			this.lineChart.YLabels = [];
 			if (this.lineChart.settings.y_labels_count) {
@@ -261,12 +269,6 @@ Raphael.fn.lineChart = function(method) {
 				// calculate current x, y
 				y = Math.round(height - gutter.bottom - Y * table.data[i]);
 				x = Math.round(gutter.left + X * (i + 0.5));
-
-				// x-axis labels
-				if (this.lineChart.settings.x_labels_step && (i % this.lineChart.settings.x_labels_step === 0)) {
-					element.text(x, height - gutter.bottom + 18, table.labels[i])
-						.attr(this.lineChart.settings.text.axis_labels).toBack();
-				}
 
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
@@ -406,8 +408,12 @@ Raphael.fn.lineChart = function(method) {
 					this.lineChart.settings.animation.speed,
 					this.lineChart.settings.animation.easing);
 			
-			// update y axis
-			
+			// update x axis labels
+			if (this.lineChart.settings.x_labels_step) {
+				helpers.drawXLabels(element, X, height - gutter.bottom + 18,
+						this.lineChart.settings.x_labels_step, table.labels,
+						this.lineChart.settings.text.axis_labels);
+			}
 
 			// draw y axis labels
 			if (this.lineChart.settings.y_labels_count) {
@@ -560,6 +566,28 @@ Raphael.fn.lineChart = function(method) {
 				};
 			
 			rect.hover(f_in, f_out);
+		},
+		
+		drawXLabels: function(elm, x, y, step, labels, style) {
+			var i;
+			
+			// reset old labels
+			if (elm.lineChart.XLabels.length) {
+				for (i = 0; i < elm.lineChart.XLabels.length; i++) {
+					elm.lineChart.XLabels[i].remove();
+				}
+			}
+	
+			elm.lineChart.XLabels = [];
+			for (i = 0; i < elm.lineChart.size; i++) {
+				var label_x = Math.round(elm.lineChart.settings.gutter.left + x * (i + 0.5));
+				
+				if (i % step === 0) {
+					var l = elm.text(label_x, y, labels[i])
+								.attr(style).toBack();
+					elm.lineChart.XLabels.push(l);
+				}
+			}
 		},
 		
 		drawYLabels: function(elm, x, y, height, count, max, top, style) {
