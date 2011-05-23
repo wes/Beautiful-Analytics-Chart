@@ -1,607 +1,518 @@
-<html>
-<head>
-	<title>Beautiful Analytics Chart</title>
-	<link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" title="Demo Stylesheet" charset="utf-8">
-	<script type='text/javascript' src='js/lib/prototype.js'></script>
-	<script type='text/javascript' src='js/lib/raphael.js'></script>
-	<script type='text/javascript' src='js/lib/highlight.js'></script>
-	<script type='text/javascript' src='js/analytics.js'></script>
-	<script type='text/javascript'>
-		Element.observe(window,'load', function(){
+<!DOCTYPE html> 
+ 
+<html lang="en"> 
+ 
+<head> 
+	<title>Raphaël Line Charts Plugin</title>
+
+	<meta charset=check"utf-8">
+	<link rel="stylesheet" type="text/css" href="css/demo.css" media="screen">
+ 
+	<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/raphael/1.5.2/raphael-min.js"></script>
+	<script type="text/javascript" src="js/raphael_linechart.js"></script>
+ 
+	<script type="text/javascript">
+		window.onload = function(){
 			var w = 840;
-		    var h1 = Raphael('beautiful-line-chart1', w, 250);
-			var h2 = Raphael('beautiful-line-chart2', w, 250);
-			var h3 = Raphael('beautiful-line-chart3', w, 250);
-			var h4 = Raphael('beautiful-line-chart4', w, 250);
-	        drawLine({
-	            holder: h1,
-	            data_holder: 'd2',
-	            mastercolor: '#01A8F0',
-	            spewidth: w,
-	            showarea: true,
-	            mousecoords: 'circle'
-	        });
-	        drawLine({
-	            holder: h1,
-	            data_holder: 'd1',
-	            mastercolor: '#8fd100',
-	            spewidth: w,
-	            showarea: true,
-	            mousecoords: 'circle'
-	        });
-	        drawLine({
-	            holder: h2,
-	            data_holder: 'd1',
-	            mastercolor: '#d90000',
-	            spewidth: w,
-	            showarea: true,
-	            mousecoords: 'circle'
-	        });
-	        drawLine({
-	            holder: h3,
-	            data_holder: 'd2',
-	            mastercolor: '#d90000',
-	            spewidth: w,
-	            showarea: false,
-	            mousecoords: 'rect'
-	        });
-	        drawLine({
-	            holder: h4,
-	            data_holder: 'd1',
-	            mastercolor: '#cacaca',
-	            spewidth: w,
-	            showarea: false
-	        });
-	        drawLine({
-	            holder: h4,
-	            data_holder: 'd2',
-	            mastercolor: '#989898',
-	            spewidth: w,
-	            showarea: false
-	        });
-        });
-
-		// Just used in the code highlighter
+			var h1 = Raphael('chart1', w, 250);
+			var h1_source = 'd1';
+			var h2 = Raphael('chart2', w, 250);
+			var h3 = Raphael('chart3', w, 250);
+			var h4 = Raphael('chart4', w, 250);
+			h1.lineChart({
+				data_holder: h1_source,
+				width: w,
+				show_area: true,
+				mouse_coords: 'rect',
+				x_labels_step: 3,
+				y_labels_count: 5,
+				colors: {
+					master: '#d90000'
+				}
+			});
+			h2.lineChart({
+				data_holder: 'd2',
+				width: w,
+				show_area: true,
+				mouse_coords: 'circle',
+				colors: {
+					master: '#01A8F0'
+				}
+			});
+			h2.lineChart({
+				data_holder: 'd1',
+				width: w,
+				show_area: true,
+				mouse_coords: 'circle',
+				colors: {
+					master: '#8fd100'
+				}
+			});
+			h3.lineChart({
+				data_holder: 'd2',
+				width: w,
+				show_area: false,
+				x_labels_step: 3,
+				y_labels_count: 5,
+				mouse_coords: 'rect',
+				colors: {
+					master: '#d90000'
+				}
+			});
+			h4.lineChart({
+				data_holder: 'd1',
+				width: w,
+				show_area: false,
+				colors: {
+					master: '#cacaca'
+				}
+			});
+			h4.lineChart({
+				data_holder: 'd2',
+				width: w,
+				show_area: false,
+				colors: {
+					master: '#989898'
+				}
+			});
 		
-		hljs.tabReplace = '   ';
-  		hljs.initHighlightingOnLoad();
-
+			change_h1 = function() {
+				h1_source = h1_source == 'd1' ? 'd2' : 'd1';
+				h1.lineChart('setDataHolder', h1_source);
+			}	 
+		}
 	</script>
 </head>
 <body>
 	
-	<div id='main'>
+	<div id="main">
 	
-		<div class='typography'>
+		<div>
 
-			<h1>Beautiful Analytics Chart</h1>
-		
-			<p class='s3'>Ever wanted a really great line chart that is simple and unobtrusive?<br />There are many options out there, this is just another option.</p>
+			<h1>Raphaël Line Charts Plugin</h1>
 			
-			<p>Leave your comment on the <a href='http://joedesigns.com/v22/index.php?page=scripts_widgets&id=83#comments'>blog post</a>.</p>
+			<p>
+				This plugin is a result of frustration from current client-side charting solutions.<br/>
+				I needed something simple that would draw a line chart in SVG based on a table in a page,
+				be customizable enough and allow me to change the data set on demand.
+				I couldn't find one.<br/>
+				So here goes.
+			</p>
 			
-			<p>Check out the <a href='https://github.com/wes/Beautiful-Analytics-Chart' target='new'>project on github</a>.</p>
-
+			<p>
+				This plugin relies heavily on the wonderful <a href="http://raphaeljs.com/">Raphaël</a>
+				JavaScript SVG library.<br/>
+				It is also a (quite extensive) fork of
+				<a href="https://github.com/wes/Beautiful-Analytics-Chart">we's Beautiful Analytics Chart</a> project.
+			</p>
+			
+			<p>
+				To download and contribute (please do!), check out the
+				<a href="https://github.com/n0nick/raphael-linechart">project on GitHub</a>.
+			</p>
+			
 		</div>
 	
-		<div class='box rotate_r'>
-			<div class='inner'>
-				<div id='beautiful-line-chart1'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart1"></div>
+				<button onclick="change_h1()">Change data source</button>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 
-			<h2>About</h2>
+			<h2>Features</h2>
 			
-			<p class='s1'>This is derived from a <a href='http://raphaeljs.com/analytics.html'>raphael example</a>, rewritten to use prototype and support a few more configurations.  My overall goal with this line chart was to create a simple and easy to use library that can create great looking line charts.  After seeing raphael's example, I knew this was the perfect place to start.</p>
-
-			<hr />
+			<p>
+				The concept for the code is dervied from the Raphaël
+				<a href="http://raphaeljs.com/analytics.html">Analytics example</a>.<br/>
+				<ul>
+					<li>Draws a line chart with custom design for a given set of data.</li>
+					<li>Framework agnostic (only requirement is Raphaël).</li>
+					<li>Semantic use of the document: data is loaded from a table element.</li>
+					<li>Ability to change data source (updating the chart).</li>
+					<li>Custom display of X &amp; Y axis labels.</li>
+				</ul>
+			</p>
 			
 			<h2>Requirements</h2>
 		
 			<p>
 				<ul>
-					<li>Prototype JS - <a href='http://prototypejs.org'>http://prototypejs.org</a></li>
-					<li>Raphael - <a href='http://raphaeljs.com'>http://raphaeljs.com</a></li>
+					<li>Raphaël - <a href="http://raphaeljs.com">http://raphaeljs.com</a></li>
 				</ul>
 			</p>
 			
 		</div>
 
-		<div class='box rotate_l'>
-			<div class='inner'>
-				<div id='beautiful-line-chart2'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart2"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 
-			<h2>Installation and Usage</h2>
+			<h2>Usage</h2>
+			
+			<h3>Include it.</h3>
+			
+			<script src="https://gist.github.com/986722.js?file=gistfile1.html"></script>
+			
+			<h3>Give it data.</h3>
 			
 			<p>
-				<b>Step 1.</b><br />
-				You must first include prototype, raphael and the <a href='js/analytics.js'>analytics</a> library.
+				Future versions will allow more flexible ways of passing data, either by different
+				types of elements or by directly passing an array.
 			</p>
 			
-			<pre>
-				<code class='html'>
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/prototype.js&#39;&gt;&lt;/script&gt;
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/raphael.js&#39;&gt;&lt;/script&gt;
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/analytics.js&#39;&gt;&lt;/script&gt;
-				</code>
-			</pre>
+			<script src="https://gist.github.com/986725.js?file=gistfile1.html"></script>
 			
-			<p>
-				<b>Step 2.</b><br />
-				Create your holding div and table data templates as below or see example <a href='#download'>download</a>.
-			</p>
+			<h3>Call it.</h3>
 			
-			<pre>
-				<code class='html'>
-&lt;div id=&#39;line-chart-holder&#39;&gt;&lt;/div&gt;
-&lt;table id=&quot;d1&quot; style=&#39;display: none;&#39;&gt;
-	&lt;tfoot&gt;
-		&lt;tr&gt;
-			&lt;th&gt;3/02&lt;/th&gt;
-			&lt;th&gt;3/03&lt;/th&gt;
-			&lt;th&gt;3/09&lt;/th&gt;
-			&lt;th&gt;3/16&lt;/th&gt;
-		&lt;/tr&gt;
-	&lt;/tfoot&gt;
-&lt;tbody class=&#39;data&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;70&lt;/td&gt;
-		&lt;td&gt;70&lt;/td&gt;
-		&lt;td&gt;210&lt;/td&gt;
-		&lt;td&gt;490&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;tbody class=&#39;line1&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;70 Views&lt;/td&gt;
-		&lt;td&gt;70 Views&lt;/td&gt;
-		&lt;td&gt;210 Views&lt;/td&gt;
-		&lt;td&gt;490 Views&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;tbody class=&#39;line2&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;Mar 2nd 2011&lt;/td&gt;
-		&lt;td&gt;Mar 3rd 2011&lt;/td&gt;
-		&lt;td&gt;Mar 9th 2011&lt;/td&gt;
-		&lt;td&gt;Mar 16th 2011&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-				</code>
-			</pre>
-			
-			<p>
-				<b>Step 3.</b><br />
-				Call the <a href='#drawline'>drawLine()</a> function to create your line chart.
-			</p>
-			
-			<pre>
-				<code class='html'>
-&lt;script type=&#39;text/javascript&#39;&gt;
-	Element.observe(window,&#39;load&#39;, function(){
-		var w = 840; // you can make this dynamic so it fits as you would like
-		var linechart = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
-		drawLine({ // call the drawLine function
-			holder: linechart, // pass through the raphael obj
-			data_holder: &#39;d2&#39;, // find the table data source by id
-			mastercolor: &#39;#01A8F0&#39;, // set the line color
-			spewidth: w, // pass in the same width
-			showarea: true, // show the area
-			mousecoords: &#39;rect&#39; // rect (uses blanket mode) | circle (pinpoints the points)
-		});
-	});
-&lt;/script&gt;
-				</code>
-			</pre>
+			<script src="https://gist.github.com/986726.js?file=gistfile1.html"></script>
 			
 		</div>
 
-		<div class='box rotate_r'>
-			<div class='inner'>
-				<div id='beautiful-line-chart3'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart3"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
+		<div>
 			
-			<a name='drawline'></a>
+			<a name="drawline"></a>
 			
 			<h2>Documentation</h2>
 		
-			<p>The drawLine() function will accept a list of arguments in a json style format.</p>
+			<p>The lineChart() plugin will accept a list of arguments in a json style format.</p>
 			
-			<pre>
-			<code class='javascript'>
-var opts = {
-	holder: &#39;&#39;, // id of div holder
-	data_holder: &#39;&#39;, // id of table data holder
-	mastercolor: &#39;&#39;, // line color ex: #ff0000
-	spewidth: &#39;&#39;, // width in pixels
-	showarea: &#39;&#39;, // bool to show the area of the line
-	linecolor1: &#39;&#39;, // color of the line1 in popup
-	linecolor2: &#39;&#39;, // color of the line2 in popup
-	mousecoords: &#39;&#39;, // selection of mouseover | rect (default), circle 
-	nogrid: &#39;&#39; // bool hide grid override.. grid be drawn once for every line chart holder
-}
-
-drawLine(opts); // draw the line chart
-			</code>
-			</pre>
+			<script src="https://gist.github.com/986727.js?file=gistfile1.js"></script>
 		</div>
 	
 
-		<div class='typography'>
+		<div>
 			
-			<a name='drawline'></a>
+			<a name="drawline"></a>
 			
 			<h2>Download</h2>
 			
-			<p class='s3'>Download <a href='js/analytics.js'>Analytics JS File</a> (8kb) Min</p>
-			<p class='s3'>Download <a href='http://joedesigns.com/download_file.php?f=https%3A%2F%2Fgithub.com%2Fwes%2FBeautiful-Analytics-Chart%2Fzipball%2Fmaster'>Full Example</a> (225kb) Zipped</p>
+			<p>
+				Check out <a href="https://github.com/n0nick/raphael-linechart">the project page on GitHub</a>
+				to download the source and example files.
+			</p>
 
 		</div>
 
-		<div class='box rotate_l'>
-			<div class='inner'>
-				<div id='beautiful-line-chart4'></div>
+		<div class="box">
+			<div class="inner">
+				<div id="chart4"></div>
 			</div>
 		</div>
 
-		<div class='typography'>
-			
-			<a name='drawline'></a>
-			
-			<h2>Extras</h2>
-			
-			<p>You can add a little css to give the charts depth and page like feel.</p>
-			
-			<pre>
-				<code class='css'>
-.box {
-margin: 0;
-padding: 0;
-clear: both;
-overflow: hidden; 
-}
-
-.rotate_r { -webkit-transform: rotate(-2deg); -moz-transform: rotate(-2deg); }
-.rotate_l { -webkit-transform: rotate(2deg); -moz-transform: rotate(2deg); }
-
-.box .inner {
-list-style-type: none;
-margin: 0 30px 30px 0;
-padding: 14px 0 0 15px;
-width: 850px;
-height: 250px;
-border: 0;
-position: relative;
-float: left;
-background: #fafafa;
-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
--webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 60px rgba(100, 100, 0, 0.1) inset;
--moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; }
-
-				</code>
-			</pre>
-
-			<p>Then make sure it has some html wrapping the holding container.</p>
-			
-			<pre>
-				<code class='html'>
-
-&lt;div class=&#39;box rotate_l&#39;&gt;
-	&lt;div class=&#39;inner&#39;&gt;
-		&lt;div id=&#39;line-chart&#39;&gt;&lt;/div&gt;
-	&lt;/div&gt;
-&lt;/div&gt;
-
-				</code>
-			</pre>
+		<div>
 
 			<h2>Thanks!</h2>
 			<p>
-				I just wanted to say thanks to Dmitry Baranovskiy at <a href='http://raphaeljs.com'>Raphael JS</a>, for supplying such an awesome example. Also Nic Knight for helping me test and abstract the changes overall.
-				
+				This page is mostly a rip-off of the original
+				<a href="http://joedesigns.com/labs/Beautiful-Analytics-Chart/">Beautiful Analytics Chart</a>
+				code, which my plugin is a fork of.<br/>
+				So credit is due to <a href="http://joedesigns.com/">Joe Designs</a> for the initial work and <a href="http://raphaeljs.com/">Dmitry Baranovskiy</a> for Raphaël JS.
 			</p>
 
 		</div>
 
 	</div>
 	
-	<table id="d1" style='display: none;'>
-	    <tfoot>
-	        <tr>
-			           	<th>3/02</th>
-			           	<th>3/03</th>
-			           	<th>3/09</th>
-			           	<th>3/16</th>
-			           	<th>3/18</th>
-			           	<th>3/21</th>
-			           	<th>3/22</th>
-			           	<th>3/28</th>
-			           	<th>3/29</th>
-			           	<th>3/30</th>
-			           	<th>3/31</th>
-			           	<th>4/01</th>
-			           	<th>4/02</th>
-			           	<th>4/04</th>
-			           	<th>4/05</th>
-			           	<th>4/06</th>
-			           	<th>4/07</th>
-			           	<th>4/08</th>
-			           	<th>4/09</th>
-			           	<th>4/10</th>
-			           	<th>4/12</th>
-			           	<th>4/13</th>
-			           	<th>4/14</th>
-			           	<th>4/15</th>
-			           	<th>4/16</th>
-			           	<th>4/17</th>
-			           	<th>4/18</th>
-			           	<th>4/19</th>
-			           	<th>4/20</th>
-			           	<th>4/21</th>
-			           	<th>4/22</th>
-			       	</tr>
-	    </tfoot>
-	    <tbody class='data'>
-	        <tr>
-				          <td>70</td>
-				          <td>70</td>
-				          <td>210</td>
-				          <td>490</td>
-				          <td>105</td>
-				          <td>70</td>
-				          <td>0</td>
-				          <td>105</td>
-				          <td>0</td>
-				          <td>210</td>
-				          <td>0</td>
-				          <td>70</td>
-				          <td>0</td>
-				          <td>70</td>
-				          <td>245</td>
-				          <td>350</td>
-				          <td>0</td>
-				          <td>280</td>
-				          <td>175</td>
-				          <td>210</td>
-				          <td>140</td>
-				          <td>210</td>
-				          <td>210</td>
-				          <td>420</td>
-				          <td>70</td>
-				          <td>140</td>
-				          <td>70</td>
-				          <td>1085</td>
-				          <td>875</td>
-				          <td>350</td>
-				          <td>175</td>
-				    </tr>
-	    </tbody>
-	    <tbody class='line1'>
-	        <tr>
-				          <td>70 Views</td>
-				          <td>70 Views</td>
-				          <td>210 Views</td>
-				          <td>490 Views</td>
-				          <td>105 Views</td>
-				          <td>70 Views</td>
-				          <td>0 Views</td>
-				          <td>105 Views</td>
-				          <td>0 Views</td>
-				          <td>210 Views</td>
-				          <td>0 Views</td>
-				          <td>70 Views</td>
-				          <td>0 Views</td>
-				          <td>70 Views</td>
-				          <td>245 Views</td>
-				          <td>350 Views</td>
-				          <td>0 Views</td>
-				          <td>280 Views</td>
-				          <td>175 Views</td>
-				          <td>210 Views</td>
-				          <td>140 Views</td>
-				          <td>210 Views</td>
-				          <td>210 Views</td>
-				          <td>420 Views</td>
-				          <td>70 Views</td>
-				          <td>140 Views</td>
-				          <td>70 Views</td>
-				          <td>1,085 Views</td>
-				          <td>875 Views</td>
-				          <td>350 Views</td>
-				          <td>175 Views</td>
-				    </tr>
-	    </tbody>
-	    <tbody class='line2'>
-	        <tr>
-				          <td>Mar 2nd 2011</td>
-				          <td>Mar 3rd 2011</td>
-				          <td>Mar 9th 2011</td>
-				          <td>Mar 16th 2011</td>
-				          <td>Mar 18th 2011</td>
-				          <td>Mar 21st 2011</td>
-				          <td>Mar 22nd 2011</td>
-				          <td>Mar 28th 2011</td>
-				          <td>Mar 29th 2011</td>
-				          <td>Mar 30th 2011</td>
-				          <td>Mar 31st 2011</td>
-				          <td>Apr 1st 2011</td>
-				          <td>Apr 2nd 2011</td>
-				          <td>Apr 4th 2011</td>
-				          <td>Apr 5th 2011</td>
-				          <td>Apr 6th 2011</td>
-				          <td>Apr 7th 2011</td>
-				          <td>Apr 8th 2011</td>
-				          <td>Apr 9th 2011</td>
-				          <td>Apr 10th 2011</td>
-				          <td>Apr 12th 2011</td>
-				          <td>Apr 13th 2011</td>
-				          <td>Apr 14th 2011</td>
-				          <td>Apr 15th 2011</td>
-				          <td>Apr 16th 2011</td>
-				          <td>Apr 17th 2011</td>
-				          <td>Apr 18th 2011</td>
-				          <td>Apr 19th 2011</td>
-				          <td>Apr 20th 2011</td>
-				          <td>Apr 21st 2011</td>
-				          <td>Apr 22nd 2011</td>
-				    </tr>
-	    </tbody>
+	<table id="d1" style="display: none;">
+			<tfoot>
+					<tr>
+									<th>3/02</th>
+									<th>3/03</th>
+									<th>3/09</th>
+									<th>3/16</th>
+									<th>3/18</th>
+									<th>3/21</th>
+									<th>3/22</th>
+									<th>3/28</th>
+									<th>3/29</th>
+									<th>3/30</th>
+									<th>3/31</th>
+									<th>4/01</th>
+									<th>4/02</th>
+									<th>4/04</th>
+									<th>4/05</th>
+									<th>4/06</th>
+									<th>4/07</th>
+									<th>4/08</th>
+									<th>4/09</th>
+									<th>4/10</th>
+									<th>4/12</th>
+									<th>4/13</th>
+									<th>4/14</th>
+									<th>4/15</th>
+									<th>4/16</th>
+									<th>4/17</th>
+									<th>4/18</th>
+									<th>4/19</th>
+									<th>4/20</th>
+									<th>4/21</th>
+									<th>4/22</th>
+							</tr>
+			</tfoot>
+			<tbody class="data">
+					<tr>
+									<td>70</td>
+									<td>70</td>
+									<td>210</td>
+									<td>490</td>
+									<td>105</td>
+									<td>70</td>
+									<td>0</td>
+									<td>105</td>
+									<td>0</td>
+									<td>210</td>
+									<td>0</td>
+									<td>70</td>
+									<td>0</td>
+									<td>70</td>
+									<td>245</td>
+									<td>350</td>
+									<td>0</td>
+									<td>280</td>
+									<td>175</td>
+									<td>210</td>
+									<td>140</td>
+									<td>210</td>
+									<td>210</td>
+									<td>420</td>
+									<td>70</td>
+									<td>140</td>
+									<td>70</td>
+									<td>1085</td>
+									<td>875</td>
+									<td>350</td>
+									<td>175</td>
+						</tr>
+			</tbody>
+			<tbody class="line1">
+					<tr>
+									<td>70 Views</td>
+									<td>70 Views</td>
+									<td>210 Views</td>
+									<td>490 Views</td>
+									<td>105 Views</td>
+									<td>70 Views</td>
+									<td>0 Views</td>
+									<td>105 Views</td>
+									<td>0 Views</td>
+									<td>210 Views</td>
+									<td>0 Views</td>
+									<td>70 Views</td>
+									<td>0 Views</td>
+									<td>70 Views</td>
+									<td>245 Views</td>
+									<td>350 Views</td>
+									<td>0 Views</td>
+									<td>280 Views</td>
+									<td>175 Views</td>
+									<td>210 Views</td>
+									<td>140 Views</td>
+									<td>210 Views</td>
+									<td>210 Views</td>
+									<td>420 Views</td>
+									<td>70 Views</td>
+									<td>140 Views</td>
+									<td>70 Views</td>
+									<td>1,085 Views</td>
+									<td>875 Views</td>
+									<td>350 Views</td>
+									<td>175 Views</td>
+						</tr>
+			</tbody>
+			<tbody class="line2">
+					<tr>
+									<td>Mar 2nd 2011</td>
+									<td>Mar 3rd 2011</td>
+									<td>Mar 9th 2011</td>
+									<td>Mar 16th 2011</td>
+									<td>Mar 18th 2011</td>
+									<td>Mar 21st 2011</td>
+									<td>Mar 22nd 2011</td>
+									<td>Mar 28th 2011</td>
+									<td>Mar 29th 2011</td>
+									<td>Mar 30th 2011</td>
+									<td>Mar 31st 2011</td>
+									<td>Apr 1st 2011</td>
+									<td>Apr 2nd 2011</td>
+									<td>Apr 4th 2011</td>
+									<td>Apr 5th 2011</td>
+									<td>Apr 6th 2011</td>
+									<td>Apr 7th 2011</td>
+									<td>Apr 8th 2011</td>
+									<td>Apr 9th 2011</td>
+									<td>Apr 10th 2011</td>
+									<td>Apr 12th 2011</td>
+									<td>Apr 13th 2011</td>
+									<td>Apr 14th 2011</td>
+									<td>Apr 15th 2011</td>
+									<td>Apr 16th 2011</td>
+									<td>Apr 17th 2011</td>
+									<td>Apr 18th 2011</td>
+									<td>Apr 19th 2011</td>
+									<td>Apr 20th 2011</td>
+									<td>Apr 21st 2011</td>
+									<td>Apr 22nd 2011</td>
+						</tr>
+			</tbody>
 	</table>
 	
-	<table id="d2" style='display: none;'>
-	    <tfoot>
-	        <tr>
-			           	<th>3/02</th>
-			           	<th>3/03</th>
-			           	<th>3/09</th>
-			           	<th>3/16</th>
-			           	<th>3/18</th>
-			           	<th>3/21</th>
-			           	<th>3/22</th>
-			           	<th>3/28</th>
-			           	<th>3/29</th>
-			           	<th>3/30</th>
-			           	<th>3/31</th>
-			           	<th>4/01</th>
-			           	<th>4/02</th>
-			           	<th>4/04</th>
-			           	<th>4/05</th>
-			           	<th>4/06</th>
-			           	<th>4/07</th>
-			           	<th>4/08</th>
-			           	<th>4/09</th>
-			           	<th>4/10</th>
-			           	<th>4/12</th>
-			           	<th>4/13</th>
-			           	<th>4/14</th>
-			           	<th>4/15</th>
-			           	<th>4/16</th>
-			           	<th>4/17</th>
-			           	<th>4/18</th>
-			           	<th>4/19</th>
-			           	<th>4/20</th>
-			           	<th>4/21</th>
-			           	<th>4/22</th>
-			       	</tr>
-	    </tfoot>
-	    <tbody class='data'>
-	        <tr>
-				          <td>70</td>
-				          <td>140</td>
-				          <td>350</td>
-				          <td>840</td>
-				          <td>945</td>
-				          <td>1015</td>
-				          <td>1015</td>
-				          <td>1120</td>
-				          <td>1120</td>
-				          <td>1330</td>
-				          <td>1330</td>
-				          <td>1400</td>
-				          <td>1400</td>
-				          <td>1470</td>
-				          <td>1715</td>
-				          <td>2065</td>
-				          <td>2065</td>
-				          <td>2345</td>
-				          <td>2520</td>
-				          <td>2730</td>
-				          <td>2870</td>
-				          <td>3080</td>
-				          <td>3290</td>
-				          <td>3710</td>
-				          <td>3780</td>
-				          <td>3920</td>
-				          <td>3990</td>
-				          <td>5075</td>
-				          <td>5950</td>
-				          <td>6300</td>
-				          <td>6475</td>
-				    </tr>
-	    </tbody>
-	    <tbody class='line1'>
-	        <tr>
-				          <td>70 Users</td>
-				          <td>140 Users</td>
-				          <td>350 Users</td>
-				          <td>840 Users</td>
-				          <td>945 Users</td>
-				          <td>1,015 Users</td>
-				          <td>1,015 Users</td>
-				          <td>1,120 Users</td>
-				          <td>1,120 Users</td>
-				          <td>1,330 Users</td>
-				          <td>1,330 Users</td>
-				          <td>1,400 Users</td>
-				          <td>1,400 Users</td>
-				          <td>1,470 Users</td>
-				          <td>1,715 Users</td>
-				          <td>2,065 Users</td>
-				          <td>2,065 Users</td>
-				          <td>2,345 Users</td>
-				          <td>2,520 Users</td>
-				          <td>2,730 Users</td>
-				          <td>2,870 Users</td>
-				          <td>3,080 Users</td>
-				          <td>3,290 Users</td>
-				          <td>3,710 Users</td>
-				          <td>3,780 Users</td>
-				          <td>3,920 Users</td>
-				          <td>3,990 Users</td>
-				          <td>5,075 Users</td>
-				          <td>5,950 Users</td>
-				          <td>6,300 Users</td>
-				          <td>6,475 Users</td>
-				    </tr>
-	    </tbody>
-	    <tbody class='line2'>
-	        <tr>
-				          <td>Mar 2nd 2011</td>
-				          <td>Mar 3rd 2011</td>
-				          <td>Mar 9th 2011</td>
-				          <td>Mar 16th 2011</td>
-				          <td>Mar 18th 2011</td>
-				          <td>Mar 21st 2011</td>
-				          <td>Mar 22nd 2011</td>
-				          <td>Mar 28th 2011</td>
-				          <td>Mar 29th 2011</td>
-				          <td>Mar 30th 2011</td>
-				          <td>Mar 31st 2011</td>
-				          <td>Apr 1st 2011</td>
-				          <td>Apr 2nd 2011</td>
-				          <td>Apr 4th 2011</td>
-				          <td>Apr 5th 2011</td>
-				          <td>Apr 6th 2011</td>
-				          <td>Apr 7th 2011</td>
-				          <td>Apr 8th 2011</td>
-				          <td>Apr 9th 2011</td>
-				          <td>Apr 10th 2011</td>
-				          <td>Apr 12th 2011</td>
-				          <td>Apr 13th 2011</td>
-				          <td>Apr 14th 2011</td>
-				          <td>Apr 15th 2011</td>
-				          <td>Apr 16th 2011</td>
-				          <td>Apr 17th 2011</td>
-				          <td>Apr 18th 2011</td>
-				          <td>Apr 19th 2011</td>
-				          <td>Apr 20th 2011</td>
-				          <td>Apr 21st 2011</td>
-				          <td>Apr 22nd 2011</td>
-				    </tr>
-	    </tbody>
+	<table id="d2" style="display: none;">
+			<tfoot>
+					<tr>
+									<th>3/02</th>
+									<th>3/03</th>
+									<th>3/09</th>
+									<th>3/16</th>
+									<th>3/18</th>
+									<th>3/21</th>
+									<th>3/22</th>
+									<th>3/28</th>
+									<th>3/29</th>
+									<th>3/30</th>
+									<th>3/31</th>
+									<th>4/01</th>
+									<th>4/02</th>
+									<th>4/04</th>
+									<th>4/05</th>
+									<th>4/06</th>
+									<th>4/07</th>
+									<th>4/08</th>
+									<th>4/09</th>
+									<th>4/10</th>
+									<th>4/12</th>
+									<th>4/13</th>
+									<th>4/14</th>
+									<th>4/15</th>
+									<th>4/16</th>
+									<th>4/17</th>
+									<th>4/18</th>
+									<th>4/19</th>
+									<th>4/20</th>
+									<th>4/21</th>
+									<th>4/22</th>
+							</tr>
+			</tfoot>
+			<tbody class="data">
+					<tr>
+									<td>70</td>
+									<td>140</td>
+									<td>350</td>
+									<td>840</td>
+									<td>945</td>
+									<td>1015</td>
+									<td>1015</td>
+									<td>1120</td>
+									<td>1120</td>
+									<td>1330</td>
+									<td>1330</td>
+									<td>1400</td>
+									<td>1400</td>
+									<td>1470</td>
+									<td>1715</td>
+									<td>2065</td>
+									<td>2065</td>
+									<td>2345</td>
+									<td>2520</td>
+									<td>2730</td>
+									<td>2870</td>
+									<td>3080</td>
+									<td>3290</td>
+									<td>3710</td>
+									<td>3780</td>
+									<td>3920</td>
+									<td>3990</td>
+									<td>5075</td>
+									<td>5950</td>
+									<td>6300</td>
+									<td>6475</td>
+						</tr>
+			</tbody>
+			<tbody class="line1">
+					<tr>
+									<td>70 Users</td>
+									<td>140 Users</td>
+									<td>350 Users</td>
+									<td>840 Users</td>
+									<td>945 Users</td>
+									<td>1,015 Users</td>
+									<td>1,015 Users</td>
+									<td>1,120 Users</td>
+									<td>1,120 Users</td>
+									<td>1,330 Users</td>
+									<td>1,330 Users</td>
+									<td>1,400 Users</td>
+									<td>1,400 Users</td>
+									<td>1,470 Users</td>
+									<td>1,715 Users</td>
+									<td>2,065 Users</td>
+									<td>2,065 Users</td>
+									<td>2,345 Users</td>
+									<td>2,520 Users</td>
+									<td>2,730 Users</td>
+									<td>2,870 Users</td>
+									<td>3,080 Users</td>
+									<td>3,290 Users</td>
+									<td>3,710 Users</td>
+									<td>3,780 Users</td>
+									<td>3,920 Users</td>
+									<td>3,990 Users</td>
+									<td>5,075 Users</td>
+									<td>5,950 Users</td>
+									<td>6,300 Users</td>
+									<td>6,475 Users</td>
+						</tr>
+			</tbody>
+			<tbody class="line2">
+					<tr>
+									<td>Mar 2nd 2011</td>
+									<td>Mar 3rd 2011</td>
+									<td>Mar 9th 2011</td>
+									<td>Mar 16th 2011</td>
+									<td>Mar 18th 2011</td>
+									<td>Mar 21st 2011</td>
+									<td>Mar 22nd 2011</td>
+									<td>Mar 28th 2011</td>
+									<td>Mar 29th 2011</td>
+									<td>Mar 30th 2011</td>
+									<td>Mar 31st 2011</td>
+									<td>Apr 1st 2011</td>
+									<td>Apr 2nd 2011</td>
+									<td>Apr 4th 2011</td>
+									<td>Apr 5th 2011</td>
+									<td>Apr 6th 2011</td>
+									<td>Apr 7th 2011</td>
+									<td>Apr 8th 2011</td>
+									<td>Apr 9th 2011</td>
+									<td>Apr 10th 2011</td>
+									<td>Apr 12th 2011</td>
+									<td>Apr 13th 2011</td>
+									<td>Apr 14th 2011</td>
+									<td>Apr 15th 2011</td>
+									<td>Apr 16th 2011</td>
+									<td>Apr 17th 2011</td>
+									<td>Apr 18th 2011</td>
+									<td>Apr 19th 2011</td>
+									<td>Apr 20th 2011</td>
+									<td>Apr 21st 2011</td>
+									<td>Apr 22nd 2011</td>
+						</tr>
+			</tbody>
 	</table>
 
-	<a href="http://github.com/wes/Beautiful-Analytics-Chart" id="fork_me" style="display:none;"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a> 
+	<a href="http://github.com/n0nick/raphael-linechart" id="fork_me"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a> 
 
 </body>
 </html>
