@@ -2,67 +2,63 @@ body {
 	 margin: 0;
 	 padding: 0;
 	 background: #e1e1e1;
+	 font-family: helvetica, arial, sans-serif;
 	 }
 
- #main {
+#main {
 	 width: 900px;
 	 margin: 0 auto 0 auto;
 	 padding: 100px 25px;
 	 background-color: #fff;
 	 }
 
- * {
-	 font-family: helvetica, arial, sans-serif;
-	 }
-
- h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5 {
 	 font-weight: bold;
 	 margin: 5px 0 10px;
 	 padding: 0;
 	 color: #121212;
 	 }
 
- h1 {
+h1 {
 	 font-size: 55px;
 	 color: #000;
 	 }
 
- h2 {
+h2 {
 	 font-size: 38px;
 	 color: #676767;
 	 }
 
- h2 {
+h2 {
 	 font-size: 23px;
 	 }
 
- p {
+p {
 	 line-height: 1.3em;
 	 }
 
- hr {
+hr {
 	 border: 0;
 	 height: 2px;
 	 background: #cccccc;
 	 width: 60%;
 	 }
 
- ul, li {
+ul, li {
 	 list-style-position: inside;
 	 margin: 0;
 	 padding: 0;
 	 }
 
- .box {
+.box {
 	 margin: 0;
 	 padding: 0;
 	 clear: both;
 	 overflow: hidden;
 	 }
 
- .box .inner {
+.box .inner {
 	 list-style-type: none;
-	 margin: 0 30px 30px 0;
 	 padding: 14px 0 0 15px;
 	 width: 850px;
 	 border: 0;
@@ -74,7 +70,7 @@ body {
 	 -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 	 }
 
- .box .inner button {
+.box .inner button {
 	 display: block;
 	 width: 150px;
 	 height: 30px;
@@ -82,109 +78,9 @@ body {
 	 margin: 0 auto 20px;
 	 }
 
- pre code {
-	 color: #f8f8f8;
-	 text-align: left;
-	 font-family: monaco, courier new, monospace;
-	 font-size: 12px;
-	 }
-
- pre {
-	 background: #212121;
-	 font-family: monaco, courier new, monospace;
-	 padding: 15px 30px 15px 30px;
-	 overflow: auto;
-	 text-align: left;
-	 border-radius: 13px;
-	 -webkit-border-radius: 13px;
-	 -moz-border-radius: 13px;
-	 }
-
- pre * {
-	 font-family: monaco, courier new, monospace;
-	 }
-
- .shebang, .comment, .template_comment, .javadoc {
-	 color: #454545;
-	 }
-
- .keyword, .tag, .ruby .function .keyword {
-	 color: #ff1779;
-	 }
-
- .function .keyword, .sub .keyword, .method, .list .title {
-	 color: #FFFFB6;
-	 }
-
- .string, .attribute .value, .cdata, .filter .argument, .attr_selector, .apache .cbracket, .date {
-	 color: #c6de00;
-	 }
-
- .subst {
-	 color: #DAEFA3;
-	 }
-
- .regexp {
-	 color: #E9C062;
-	 }
-
- .function .title, .sub .identifier, .pi, .decorator, .ini .title {
-	 color: #FFFFB6;
-	 }
-
- .class .title, .smalltalk .class, .javadoctag, .phpdoc {
-	 color: #FFFFB6;
-	 }
-
- .symbol, .number, .variable, .vbscript, .literal {
-	 color: #ff6f21;
-	 }
-
- .css .keyword {
-	 color: #43baff;
-	 }
-
- .css .rule .keyword, .css .id {
-	 color: #FFFFB6;
-	 }
-
- .css .class {
-	 color: #FFF;
-	 }
-
- .hexcolor {
-	 color: #C6C5FE;
-	 }
-
- .number {
-	 color: #FF73FD;
-	 }
-
- table {
-	 border: 0px;
-	 border-collapse: collapse;
-	 border-spacing: 0px;
-	 background-color: #526d9e;
-	 font-size: 11px;
-	 }
-
- table th {
-	 background-color: #526d9e;
-	 color: #fff;
-	 border-bottom-width: 2px;
-	 font-weight: bold;
-	 }
-
- table th, table td {
-	;
-	 padding: 4px;
-	 border: 1px #fff solid;
-	 }
-
- table tr td {
-	 background-color: #ddd;
-	 }
-
- table tr:nth-child(odd) td {
-	 background-color: #bacbcb;
-	 }
+.box, .gist {
+	margin: 0 30px 30px 0;
+	}
+.gist {
+	font-size: 0.8em;
+	}

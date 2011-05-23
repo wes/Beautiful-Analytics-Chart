@@ -3,17 +3,16 @@
 <html lang="en"> 
  
 <head> 
-  <title>Raphaël Line Charts Plugin</title>
+	<title>Raphaël Line Charts Plugin</title>
 
-  <meta charset=check"utf-8">
-  <link rel="stylesheet" type="text/css" href="css/demo.css" media="screen">
+	<meta charset=check"utf-8">
+	<link rel="stylesheet" type="text/css" href="css/demo.css" media="screen">
  
-	<script type="text/javascript" src="js/lib/raphael.js"></script>
-	<script type="text/javascript" src="js/lib/highlight.js"></script>
+	<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/raphael/1.5.2/raphael-min.js"></script>
 	<script type="text/javascript" src="js/raphael_linechart.js"></script>
  
 	<script type="text/javascript">
-	  window.onload = function(){
+		window.onload = function(){
 			var w = 840;
 			var h1 = Raphael('chart1', w, 250);
 			var h1_source = 'd1';
@@ -27,9 +26,9 @@
 				mouse_coords: 'rect',
 				x_labels_step: 3,
 				y_labels_count: 5,
-        colors: {
-          master: '#d90000'
-        }
+				colors: {
+					master: '#d90000'
+				}
 			});
 			h2.lineChart({
 				data_holder: 'd2',
@@ -37,7 +36,7 @@
 				show_area: true,
 				mouse_coords: 'circle',
 				colors: {
-				  master: '#01A8F0'
+					master: '#01A8F0'
 				}
 			});
 			h2.lineChart({
@@ -46,7 +45,7 @@
 				show_area: true,
 				mouse_coords: 'circle',
 				colors: {
-				  master: '#8fd100'
+					master: '#8fd100'
 				}
 			});
 			h3.lineChart({
@@ -57,7 +56,7 @@
 				y_labels_count: 5,
 				mouse_coords: 'rect',
 				colors: {
-				  master: '#d90000'
+					master: '#d90000'
 				}
 			});
 			h4.lineChart({
@@ -65,7 +64,7 @@
 				width: w,
 				show_area: false,
 				colors: {
-				  master: '#cacaca'
+					master: '#cacaca'
 				}
 			});
 			h4.lineChart({
@@ -73,20 +72,15 @@
 				width: w,
 				show_area: false,
 				colors: {
-				  master: '#989898'
+					master: '#989898'
 				}
 			});
 		
-  		change_h1 = function() {
-  		  h1_source = h1_source == 'd1' ? 'd2' : 'd1';
-  		  h1.lineChart('setDataHolder', h1_source);
-  		}  
+			change_h1 = function() {
+				h1_source = h1_source == 'd1' ? 'd2' : 'd1';
+				h1.lineChart('setDataHolder', h1_source);
+			}	 
 		}
-
-		// Just used in the code highlighter
-		hljs.tabReplace = '   ';
-		hljs.initHighlightingOnLoad();
-
 	</script>
 </head>
 <body>
@@ -98,23 +92,23 @@
 			<h1>Raphaël Line Charts Plugin</h1>
 			
 			<p>
-			  This plugin is a result of frustration from current client-side charting solutions.<br/>
-			  I needed something simple that would draw a line chart in SVG based on a table in a page,
-			  be customizable enough and allow me to change the data set on demand.
-			  I couldn't find one.<br/>
-			  So here goes.
+				This plugin is a result of frustration from current client-side charting solutions.<br/>
+				I needed something simple that would draw a line chart in SVG based on a table in a page,
+				be customizable enough and allow me to change the data set on demand.
+				I couldn't find one.<br/>
+				So here goes.
 			</p>
 			
 			<p>
-			  This plugin relies heavily on the wonderful <a href="http://raphaeljs.com/">Raphaël</a>
-			  JavaScript SVG library.<br/>
-			  It is also a (quite extensive) fork of
-			  <a href="https://github.com/wes/Beautiful-Analytics-Chart">we's Beautiful Analytics Chart</a> project.
+				This plugin relies heavily on the wonderful <a href="http://raphaeljs.com/">Raphaël</a>
+				JavaScript SVG library.<br/>
+				It is also a (quite extensive) fork of
+				<a href="https://github.com/wes/Beautiful-Analytics-Chart">we's Beautiful Analytics Chart</a> project.
 			</p>
 			
 			<p>
-			  To download and contribute (please do!), check out the
-			  <a href="https://github.com/n0nick/raphael-linechart">project on GitHub</a>.
+				To download and contribute (please do!), check out the
+				<a href="https://github.com/n0nick/raphael-linechart">project on GitHub</a>.
 			</p>
 			
 		</div>
@@ -131,15 +125,15 @@
 			<h2>Features</h2>
 			
 			<p>
-			  The concept for the code is dervied from the Raphaël
-			  <a href="http://raphaeljs.com/analytics.html">Analytics example</a>.<br/>
-			  <ul>
-			    <li>Draws a line chart with custom design for a given set of data.</li>
-			    <li>Framework agnostic (only requirement is Raphaël).</li>
-			    <li>Semantic use of the document: data is loaded from a table element.</li>
-			    <li>Ability to change data source (updating the chart).</li>
-			    <li>Custom display of X &amp; Y axis labels.</li>
-			  </ul>
+				The concept for the code is dervied from the Raphaël
+				<a href="http://raphaeljs.com/analytics.html">Analytics example</a>.<br/>
+				<ul>
+					<li>Draws a line chart with custom design for a given set of data.</li>
+					<li>Framework agnostic (only requirement is Raphaël).</li>
+					<li>Semantic use of the document: data is loaded from a table element.</li>
+					<li>Ability to change data source (updating the chart).</li>
+					<li>Custom display of X &amp; Y axis labels.</li>
+				</ul>
 			</p>
 			
 			<h2>Requirements</h2>
@@ -162,85 +156,22 @@
 
 			<h2>Usage</h2>
 			
-		  <h3>Include it.</h3>
+			<h3>Include it.</h3>
 			
-			<pre>
-				<code class="html">
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/lib/raphael.js&#39;&gt;&lt;/script&gt;
-&lt;script type=&#39;text/javascript&#39; src=&#39;js/raphael_linechart.js&#39;&gt;&lt;/script&gt;
-				</code>
-			</pre>
+			<script src="https://gist.github.com/986722.js?file=gistfile1.html"></script>
 			
 			<h3>Give it data.</h3>
 			
 			<p>
-			  Future versions will allow more flexible ways of passing data, either by different
-			  types of elements or by directly passing an array.
+				Future versions will allow more flexible ways of passing data, either by different
+				types of elements or by directly passing an array.
 			</p>
 			
-			<pre>
-				<code class="html">
-&lt;div id=&#39;line-chart-holder&#39;&gt;&lt;/div&gt;
-&lt;table id=&quot;d1&quot; style=&#39;display: none;&#39;&gt;
-	&lt;tfoot&gt;
-		&lt;tr&gt;
-			&lt;th&gt;3/02&lt;/th&gt;
-			&lt;th&gt;3/03&lt;/th&gt;
-			&lt;th&gt;3/09&lt;/th&gt;
-			&lt;th&gt;3/16&lt;/th&gt;
-		&lt;/tr&gt;
-	&lt;/tfoot&gt;
-&lt;tbody class=&#39;data&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;70&lt;/td&gt;
-		&lt;td&gt;70&lt;/td&gt;
-		&lt;td&gt;210&lt;/td&gt;
-		&lt;td&gt;490&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;tbody class=&#39;line1&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;70 Views&lt;/td&gt;
-		&lt;td&gt;70 Views&lt;/td&gt;
-		&lt;td&gt;210 Views&lt;/td&gt;
-		&lt;td&gt;490 Views&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;tbody class=&#39;line2&#39;&gt;
-	&lt;tr&gt;
-		&lt;td&gt;Mar 2nd 2011&lt;/td&gt;
-		&lt;td&gt;Mar 3rd 2011&lt;/td&gt;
-		&lt;td&gt;Mar 9th 2011&lt;/td&gt;
-		&lt;td&gt;Mar 16th 2011&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-				</code>
-			</pre>
+			<script src="https://gist.github.com/986725.js?file=gistfile1.html"></script>
 			
 			<h3>Call it.</h3>
 			
-			<pre>
-				<code class="html">
-&lt;script type=&#39;text/javascript&#39;&gt;
-	window.onload = function(){
-		var w = 840; // you can make this dynamic so it fits as you would like
-		var paper = Raphael(&#39;line-chart&#39;, w, 250); // init the raphael obj and give it a width plus height
-		paper.lineChart({ // call the lineChart function
-			data_holder: &#39;d2&#39;, // find the table data source by id
-			width: w, // pass in the same width
-			show_area: true, // show the area
-			x_labels_step: 3,	// X axis labels step
-			y_labels_count: 5,	// Y axis labels count
-			mouse_coords: &#39;rect&#39;, // rect (uses blanket mode) | circle (pinpoints the points)
-			colors: {
-			  master: &#39;#01A8F0&#39; // set the line color
-			}
-		});
-	};
-&lt;/script&gt;
-				</code>
-			</pre>
+			<script src="https://gist.github.com/986726.js?file=gistfile1.html"></script>
 			
 		</div>
 
@@ -258,51 +189,7 @@
 		
 			<p>The lineChart() plugin will accept a list of arguments in a json style format.</p>
 			
-			<pre>
-			<code class="javascript">
-var opts = {
-	data_holder: null,		// table element holding the data to display
-	width: 500,			// chart width
-	height: 250,			// chart height
-	gutter: {                    // gutter dimensions
-		top: 20,
-		right: 0,
-		bottom: 50,
-		left: 30
-	},
-	show_area: false,		// whether to fill the area below the line
-	mouse_coords: &#39;rect&#39;,	// way to capture mouse events
-	no_grid: false,		// whether to display background grid
-	x_labels_step: false,	// X axis: either false or a step integer
-	y_labels_count: false,	// Y axis: either false or a labels count
-	animation: {			// animation (on data source change) settings
-		speed: 600,
-		easing: "backOut"
-	},
-	colors: {	                // color settings
-		master: &#39;#01A8F0&#39;,
-		line1: &#39;#000000&#39;,
-		line2: &#39;#01A8F0&#39;,
-	},
-	text: {		        // text style settings
-		axis_labels: {
-			font: &#39;10px Helvetica, Arial&#39;,
-			fill: "#000000"
-		},
-		popup_line1: {
-			font: &#39;bold 11px Helvetica, Arial&#39;,
-			fill: "#000000"
-		},
-		popup_line2: {
-			font: &#39;bold 10px Helvetica, Arial&#39;,
-			fill: "#000000"
-		}
-	}
-};
-
-r.lineChart(opts); // draw the line chart in an initiated Raphael object
-			</code>
-			</pre>
+			<script src="https://gist.github.com/986727.js?file=gistfile1.js"></script>
 		</div>
 	
 
@@ -313,8 +200,8 @@ r.lineChart(opts); // draw the line chart in an initiated Raphael object
 			<h2>Download</h2>
 			
 			<p>
-			  Check out <a href="https://github.com/n0nick/raphael-linechart">the project page on GitHub</a>
-			  to download the source and example files.
+				Check out <a href="https://github.com/n0nick/raphael-linechart">the project page on GitHub</a>
+				to download the source and example files.
 			</p>
 
 		</div>
@@ -329,10 +216,10 @@ r.lineChart(opts); // draw the line chart in an initiated Raphael object
 
 			<h2>Thanks!</h2>
 			<p>
-			  This page is mostly a rip-off of the original
-			  <a href="http://joedesigns.com/labs/Beautiful-Analytics-Chart/">Beautiful Analytics Chart</a>
-			  code, which my plugin is a fork of.<br/>
-			  So credit is due to <a href="http://joedesigns.com/">Joe Designs</a> for the initial work and <a href="http://raphaeljs.com/">Dmitry Baranovskiy</a> for Raphaël JS.
+				This page is mostly a rip-off of the original
+				<a href="http://joedesigns.com/labs/Beautiful-Analytics-Chart/">Beautiful Analytics Chart</a>
+				code, which my plugin is a fork of.<br/>
+				So credit is due to <a href="http://joedesigns.com/">Joe Designs</a> for the initial work and <a href="http://raphaeljs.com/">Dmitry Baranovskiy</a> for Raphaël JS.
 			</p>
 
 		</div>
