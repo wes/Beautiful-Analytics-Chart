@@ -1,11 +1,11 @@
 # Raphaël Line Charts Plugin #
 
-This plugin is a result of fruslitration from current client-side charting solutions.	 
+This plugin is a result of frustration from current client-side charting solutions.	 
 I needed something simple that would draw a line chart in SVG based on a table in a page, be customizable enough and allow me to change the data set on demand. I couldn't find one.	
-So here goes. 
+So here it goes. 
 
 This plugin relies heavily on the wonderful [Raphaël][1] JavaScript SVG library.	
-It is also a (quite extensive) fork of [we's Beautiful Analytics Chart][2] project. 
+It is also a (quite extensive) fork of [wes's Beautiful Analytics Chart][2] project. 
 
 To download and contribute (please do!), check out the [project on GitHub][3]. 
 
