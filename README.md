@@ -1,6 +1,6 @@
 # Beautiful Analytics Chart #
 
-This is a plugin that works with raphael js, and produces beautiful line charts. This plugin relies heavily on the wonderful [Raphaël][1] JavaScript SVG library.	
+This is a plugin that works with raphael js, and produces beautiful line charts.
 
 To download and contribute (please do!), check out the http://github.com/wes/Beautiful-Analytics-Chart. 
 
