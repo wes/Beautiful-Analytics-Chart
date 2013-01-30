@@ -20,23 +20,36 @@
 	            mastercolor: '#01A8F0',
 	            spewidth: w,
 	            showarea: true,
-	            mousecoords: 'circle'
+	            mousecoords: 'circle',
+	            nodot: true
 	        });
 	        drawLine({
 	            holder: h1,
 	            data_holder: 'd1',
-	            mastercolor: '#8fd100',
+	            mastercolor: '#666',
 	            spewidth: w,
 	            showarea: true,
-	            mousecoords: 'circle'
+	            mousecoords: 'circle',
+	        });
+	        drawLine({
+	            holder: h2,
+	            data_holder: 'd2',
+	            mastercolor: '#555',
+	            spewidth: w,
+	            showarea: false,
+	            mousecoords: 'circle',
+	            gridcolor: '#333333',
+	            nodot: true
 	        });
 	        drawLine({
 	            holder: h2,
 	            data_holder: 'd1',
-	            mastercolor: '#d90000',
+	            mastercolor: '#8dd916',
 	            spewidth: w,
 	            showarea: true,
-	            mousecoords: 'circle'
+	            mousecoords: 'circle',
+	            gridcolor: '#333333',
+	            dotcolor: '#333333'
 	        });
 	        drawLine({
 	            holder: h3,
@@ -48,17 +61,19 @@
 	        });
 	        drawLine({
 	            holder: h4,
-	            data_holder: 'd1',
-	            mastercolor: '#cacaca',
+	            data_holder: 'd2',
+	            mastercolor: '#ccc',
 	            spewidth: w,
-	            showarea: false
+	            showarea: false,
+	            nodot: true // hide dots
 	        });
 	        drawLine({
 	            holder: h4,
-	            data_holder: 'd2',
-	            mastercolor: '#989898',
+	            data_holder: 'd1',
+	            mastercolor: '#eb2682',
 	            spewidth: w,
-	            showarea: false
+	            showarea: true,
+	            nodot: true // hide dots
 	        });
         });
 
@@ -110,7 +125,7 @@
 			
 		</div>
 
-		<div class='box rotate_l'>
+		<div class='box rotate_l dark'>
 			<div class='inner'>
 				<div id='beautiful-line-chart2'></div>
 			</div>

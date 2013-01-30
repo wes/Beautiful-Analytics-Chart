@@ -45,10 +45,14 @@ border: 0;
 position: relative;
 float: left;
 background: #fafafa; /* old browsers */
-
 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 60px rgba(100, 100, 0, 0.1) inset;
--moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; }
+-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
+}
+
+.box.dark .inner {
+background: #222; /* old browsers */
+}
 
 /*
   IR_Black style (c) Vasily Mikhailitchenko <vaskas@programica.ru>

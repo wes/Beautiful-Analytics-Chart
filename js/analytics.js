@@ -44,7 +44,10 @@ function drawLine(conf) {
 		linecolor1 = !conf.linecolor1 ? '#000000' : conf.linecolor1,
 		linecolor2 = !conf.linecolor2 ? conf.mastercolor : conf.linecolor2,
 		mousecoords = !conf.mousecoords ? 'rect' : conf.mousecoords,
-		nogrid = !conf.nogrid ? false : conf.nogrid;
+		nodot = !conf.nodot ? false : conf.nodot,
+		nogrid = !conf.nogrid ? false : conf.nogrid,
+		gridcolor = !conf.gridcolor ? '#eeeeee' : conf.gridcolor;
+		dotcolor = !conf.dotcolor ? '#ffffff' : conf.dotcolor;
 	var labels = [],
 		data = [],
 		datatotal = [],
@@ -89,7 +92,7 @@ function drawLine(conf) {
 		max = Math.max.apply(Math, data),
 		Y = (height - bottomgutter - topgutter) / max;
 	if(!r.gridDrawn && nogrid == false) {
-		r.drawGrid(leftgutter + X * .5 + .5, topgutter + .5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, "#eaeaea");
+		r.drawGrid(leftgutter + X * .5 + .5, topgutter + .5, width - leftgutter - X, height - topgutter - bottomgutter, 10, 10, conf.gridcolor);
 	}
 	r.gridDrawn = true;
 	var path = r.path().attr({
@@ -138,15 +141,19 @@ function drawLine(conf) {
 			p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 			bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 		}
-		var dot = r.circle(x, y, 4).attr({
-			fill: "#ffffff",
-			stroke: color,
-			"stroke-width": 2
-		});
-		if(y == 0) {
-			dot.attr({
-				opacity: 0
+		if(!conf.nodot){
+			var dot = r.circle(x, y, 4).attr({
+				fill: dotcolor,
+				stroke: color,
+				"stroke-width": 2
 			});
+			if(y == 0) {
+				dot.attr({
+					opacity: 0
+				});
+			}
+		}else{
+			var dot = false;
 		}
 		if(mousecoords == 'circle') {
 			blanket.push(r.circle(x, y, 14).attr({
@@ -180,10 +187,14 @@ function drawLine(conf) {
                 frame.show().stop().animate(anim);
                 label[0].attr({text: data + " hit" + (data == 1 ? "" : "s")}).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);
                 label[1].attr({text: lbl + " September 2008"}).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);
-                dot.attr("r", 6);
+                if(dot){
+	                dot.attr("r", 6);
+	            }
                 is_label_visible = true;
             }, function() {
-				dot.attr("r", 4);
+            	if(dot){
+					dot.attr("r", 4);
+				}
                 leave_timer = setTimeout(function () {
                     frame.hide();
                     label[0].hide();
