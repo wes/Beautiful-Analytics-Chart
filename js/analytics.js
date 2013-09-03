@@ -185,9 +185,8 @@ function drawLine(conf) {
                 lx = label[0].transform()[0][1] + ppp.dx;
                 ly = label[0].transform()[0][2] + ppp.dy;
                 frame.show().stop().animate(anim);
-                label[0].attr({text: data + " hit" + (data == 1 ? "" : "s")}).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);
-                label[1].attr({text: lbl + " September 2008"}).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);
-                if(dot){
+                 label[0].attr({text: line1 }).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);
+                label[1].attr({text: line2 }).show().stop().animateWith(frame, anim, {transform: ["t", lx, ly]}, 200 * is_label_visible);                if(dot){
 	                dot.attr("r", 6);
 	            }
                 is_label_visible = true;
